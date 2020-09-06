@@ -5,3 +5,7 @@
   <li>2. Bommen</li>
   <li>3. Muuren</li>
 </ul>
+<h2>Extra features (als er tijd is)</h2>
+<ul>
+  <li>1. Webpagina</li>
+</ul>
