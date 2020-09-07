@@ -9,85 +9,11 @@ B = (0, 0, 255)
 
 Player_1 = {"position": {"x": 4, "y": 4}}
 
-playerKeys = {"u": 0, "d": 0, "l": 0, "r": 0}
-
-# Functions
-
-
-def draw_player1():
-    sense.set_pixel(Player_1["position"]["x"], Player_1["position"]["y"], G)
-
-
-# def move_up(event):
-#     global Player_1
-#     if event.action == "pressed" and Player_1["position"]["y"] > 0:
-#         Player_1["position"]["y"] -= 1
-
-
-# def move_down(event):
-#     global Player_1
-#     if event.action == "pressed" and Player_1["position"]["y"] < 7:
-#         Player_1["position"]["y"] += 1
-
-
-# def move_left(event):
-#     global Player_1
-#     if event.action == "pressed" and Player_1["position"]["x"] > 0:
-#         Player_1["position"]["x"] -= 1
-
-
-# def move_right(event):
-#     global Player_1
-#     if event.action == "pressed" and Player_1["position"]["x"] < 7:
-#         Player_1["position"]["x"] += 1
-
-
-def move_up(event):
-    global Player_1
-    global playerKeys
-    if event.action == "pressed" and Player_1["position"]["y"] > 0:
-        playerKeys["u"] = 1
-    elif event.action == "released":
-        playerKeys["u"] = 0
-
-
-def move_down(event):
-    global Player_1
-    global playerKeys
-    if event.action == "pressed" and Player_1["position"]["y"] < 7:
-        playerKeys["d"] = 1
-    elif event.action == "released":
-        playerKeys["d"] = 0
-
-
-def move_left(event):
-    global Player_1
-    global playerKeys
-    if event.action == "pressed" and Player_1["position"]["x"] > 0:
-        playerKeys["l"] = 1
-    elif event.action == "released":
-        playerKeys["l"] = 0
-
-
-def move_right(event):
-    global Player_1
-    global playerKeys
-    if event.action == "pressed" and Player_1["position"]["x"] < 7:
-        playerKeys["r"] = 1
-    elif event.action == "released":
-        playerKeys["r"] = 0
-
-
-def move_player(event):
-    global Player_1
-    global playerKeys
-
 
 StartTime = time.time()
 
-
-def action():
-    print("action ! -> time : {:.1f}s".format(time.time() - StartTime))
+inter = ""
+playerSpeed = 0.4
 
 
 class setInterval:
@@ -108,18 +34,69 @@ class setInterval:
         self.stopEvent.set()
 
 
-# start action every 0.6s
-inter = setInterval(0.6, action)
-print("just after setInterval -> time : {:.1f}s".format(time.time() - StartTime))
+def draw_player1():
+    sense.set_pixel(Player_1["position"]["x"], Player_1["position"]["y"], G)
 
 
-t = threading.Timer(5, inter.cancel)
+def move_player_up():
+    global Player_1
+    if Player_1["position"]["y"] > 0:
+        Player_1["position"]["y"] -= 1
 
-t.start()
 
-# time.sleep(3)
+def move_player_down():
+    global Player_1
+    if Player_1["position"]["y"] < 7:
+        Player_1["position"]["y"] += 1
 
-t.cancel()
+
+def move_player_left():
+    global Player_1
+    if Player_1["position"]["x"] > 0:
+        Player_1["position"]["x"] -= 1
+
+
+def move_player_right():
+    global Player_1
+    if Player_1["position"]["x"] < 7:
+
+        Player_1["position"]["x"] += 1
+
+
+def move_up(event):
+    global Player_1
+    global inter
+    if event.action == "pressed" and Player_1["position"]["y"] > 0:
+        inter = setInterval(playerSpeed, move_player_up)
+    elif event.action == "released":
+        inter.cancel()
+
+
+def move_down(event):
+    global Player_1
+    global inter
+    if event.action == "pressed" and Player_1["position"]["y"] < 7:
+        inter = setInterval(playerSpeed, move_player_down)
+    elif event.action == "released":
+        inter.cancel()
+
+
+def move_left(event):
+    global Player_1
+    global inter
+    if event.action == "pressed" and Player_1["position"]["x"] > 0:
+        inter = setInterval(playerSpeed, move_player_left)
+    elif event.action == "released":
+        inter.cancel()
+
+
+def move_right(event):
+    global Player_1
+    global inter
+    if event.action == "pressed" and Player_1["position"]["x"] < 7:
+        inter = setInterval(playerSpeed, move_player_right)
+    elif event.action == "released":
+        inter.cancel()
 
 
 sense.stick.direction_up = move_up
