@@ -22,10 +22,11 @@ STATE = {"value": 0}
 
 USERS = set()
 BOMBS = set()
-CHUNKS = {
-    Chunk(
-        {"x": 1, "y": 1},
-        [
+
+CHUNKS = [
+    {
+        "position": {"x": 1, "y": 1},
+        "grid": [
             [0, 1, 1, 0, 0, 0, 0, 0],
             [0, 1, 1, 0, 0, 0, 0, 0],
             [0, 1, 1, 0, 0, 0, 0, 0],
@@ -35,8 +36,21 @@ CHUNKS = {
             [0, 1, 1, 0, 0, 0, 0, 0],
             [0, 1, 1, 0, 0, 0, 0, 0],
         ],
-    )
-}
+    },
+    {
+        "position": {"x": 2, "y": 1},
+        "grid": [
+            [0, 1, 1, 0, 0, 0, 0, 0],
+            [0, 1, 1, 0, 0, 0, 0, 0],
+            [0, 1, 1, 0, 0, 0, 0, 0],
+            [0, 1, 1, 0, 0, 0, 0, 0],
+            [0, 1, 1, 0, 0, 0, 0, 0],
+            [0, 1, 1, 0, 0, 0, 0, 0],
+            [0, 1, 1, 0, 0, 0, 0, 0],
+            [0, 1, 1, 0, 0, 0, 0, 0],
+        ],
+    },
+]
 
 
 def users_event():
@@ -44,11 +58,11 @@ def users_event():
 
 
 def bombs_event():
-    return json.dumps({"type": "bombs", **BOMBS})
+    return json.dumps({"type": "bombs", "data": BOMBS})
 
 
 def chunks_event():
-    return json.dumps({"type": "chunks", **CHUNKS})
+    return json.dumps({"type": "chunks", "data": CHUNKS})
 
 
 async def notify_users():
@@ -83,7 +97,7 @@ async def incoming_socket(websocket, path):
     # register(websocket) sends user_event() to websocket
     await register(websocket)
     try:
-        # await websocket.send(bombs_event())
+        await websocket.send(chunks_event())
         async for message in websocket:
             data = json.loads(message)
             if data["action"] == "minus":
@@ -98,7 +112,7 @@ async def incoming_socket(websocket, path):
         await unregister(websocket)
 
 
-start_server = websockets.serve(incoming_socket, "192.168.2.20", 8765)
+start_server = websockets.serve(incoming_socket, "192.168.2.10", 8765)
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
