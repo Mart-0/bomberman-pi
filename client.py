@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-import config
 
+import config
 import asyncio
 import logging
 import websockets
