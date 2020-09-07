@@ -4,6 +4,7 @@ import config
 import asyncio
 import logging
 import websockets
+import json
 
 logging.basicConfig(
     level=logging.INFO,
@@ -18,6 +19,11 @@ async def incoming_socket():
         while True:
             message = await websocket.recv()
             logging.info("%s", message)
+            
+            # testen conversie json naar python array
+            print("test hieronder:")
+            serverdata = json.loads(message)
+            print(serverdata["type"])
 
 
 asyncio.get_event_loop().run_until_complete(incoming_socket())
