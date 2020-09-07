@@ -14,6 +14,7 @@ StartTime = time.time()
 
 inter = ""
 playerSpeed = 0.4
+playerKeys = {"u": 0, "d": 0, "l": 0, "r": 0}
 
 
 class setInterval:
@@ -25,10 +26,12 @@ class setInterval:
         thread.start()
 
     def __setInterval(self):
+        global playerKeys
         self.action()
         nextTime = time.time() + self.interval
         while not self.stopEvent.wait(nextTime - time.time()):
             nextTime += self.interval
+            playerKeys = {"u": 0, "d": 0, "l": 0, "r": 0}
             self.action()
 
     def cancel(self):
@@ -64,36 +67,52 @@ def move_player_right():
 
 
 def move_up(event):
-    global Player_1
-    global inter
-    if event.action == "pressed" and Player_1["position"]["y"] > 0:
+    global Player_1, inter, playerKeys
+    if (
+        event.action == "pressed"
+        and Player_1["position"]["y"] > 0
+        and playerKeys["u"] == 0
+    ):
+        playerKeys["u"] = 1
         inter = setInterval(playerSpeed, move_player_up)
     elif event.action == "released":
         inter.cancel()
 
 
 def move_down(event):
-    global Player_1
-    global inter
-    if event.action == "pressed" and Player_1["position"]["y"] < 7:
+    global Player_1, inter, playerKeys
+    if (
+        event.action == "pressed"
+        and Player_1["position"]["y"] < 7
+        and playerKeys["d"] == 0
+    ):
+        playerKeys["d"] = 1
         inter = setInterval(playerSpeed, move_player_down)
     elif event.action == "released":
         inter.cancel()
 
 
 def move_left(event):
-    global Player_1
-    global inter
-    if event.action == "pressed" and Player_1["position"]["x"] > 0:
+    global Player_1, inter, playerKeys
+    if (
+        event.action == "pressed"
+        and Player_1["position"]["x"] > 0
+        and playerKeys["l"] == 0
+    ):
+        playerKeys["l"] = 1
         inter = setInterval(playerSpeed, move_player_left)
     elif event.action == "released":
         inter.cancel()
 
 
 def move_right(event):
-    global Player_1
-    global inter
-    if event.action == "pressed" and Player_1["position"]["x"] < 7:
+    global Player_1, inter, playerKeys
+    if (
+        event.action == "pressed"
+        and Player_1["position"]["x"] < 7
+        and playerKeys["r"] == 0
+    ):
+        playerKeys["r"] = 1
         inter = setInterval(playerSpeed, move_player_right)
     elif event.action == "released":
         inter.cancel()
