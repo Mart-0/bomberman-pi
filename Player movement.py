@@ -25,6 +25,7 @@ class setInterval:
         thread.start()
 
     def __setInterval(self):
+        self.action()
         nextTime = time.time() + self.interval
         while not self.stopEvent.wait(nextTime - time.time()):
             nextTime += self.interval
@@ -59,7 +60,6 @@ def move_player_left():
 def move_player_right():
     global Player_1
     if Player_1["position"]["x"] < 7:
-
         Player_1["position"]["x"] += 1
 
 
