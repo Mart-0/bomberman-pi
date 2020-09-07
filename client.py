@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import config
 
 import asyncio
 import logging
@@ -9,7 +10,7 @@ logging.basicConfig(level=logging.INFO,
 
 
 async def incoming_socket():
-    uri = "ws://192.168.2.20:8765"
+    uri = config.server['host']
     async with websockets.connect(uri) as websocket:
         while True:
             message = await websocket.recv()
