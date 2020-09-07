@@ -18,31 +18,28 @@ class Chunk:
         self.grid = grid
 
 
-STATE = {"value": 0}
-
-USERS = set()
-BOMBS = set()
-
-CHUNKS = [
+users = set()
+bombs = set()
+chunks = [
     {
         "position": {"x": 1, "y": 1},
         "grid": [
-            [0, 1, 1, 0, 0, 0, 0, 0],
-            [0, 1, 1, 0, 0, 0, 0, 0],
-            [0, 1, 1, 0, 0, 0, 0, 0],
-            [0, 1, 1, 0, 0, 0, 0, 0],
-            [0, 1, 1, 0, 0, 0, 0, 0],
-            [0, 1, 1, 0, 0, 0, 0, 0],
-            [0, 1, 1, 0, 0, 0, 0, 0],
-            [0, 1, 1, 0, 0, 0, 0, 0],
+            [1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 0, 1, 0, 1, 0, 1],
+            [1, 0, 0, 0, 2, 0, 0, 0],
+            [1, 1, 2, 1, 2, 1, 0, 1],
+            [1, 2, 0, 2, 2, 0, 0, 0],
+            [1, 1, 2, 1, 0, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0],
+            [1, 1, 0, 1, 0, 1, 0, 1],
         ],
     },
     {
         "position": {"x": 2, "y": 1},
         "grid": [
-            [0, 1, 1, 0, 0, 0, 0, 0],
-            [0, 1, 1, 0, 0, 0, 0, 0],
-            [0, 1, 1, 0, 0, 0, 0, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1],
+            [0, 1, 1, 1, 1, 1, 1, 1],
+            [0, 1, 1, 1, 1, 1, 1, 1],
             [0, 1, 1, 0, 0, 0, 0, 0],
             [0, 1, 1, 0, 0, 0, 0, 0],
             [0, 1, 1, 0, 0, 0, 0, 0],
@@ -54,43 +51,42 @@ CHUNKS = [
 
 
 def users_event():
-    return json.dumps({"type": "users", "count": len(USERS)})
+    return json.dumps({"type": "users", "count": len(users)})
 
 
 def bombs_event():
-    return json.dumps({"type": "bombs", "data": BOMBS})
+    return json.dumps({"type": "bombs", "data": bombs})
 
 
 def chunks_event():
-    return json.dumps({"type": "chunks", "data": CHUNKS})
+    return json.dumps({"type": "chunks", "data": chunks})
 
 
 async def notify_users():
-    if USERS:
+    if users:
         message = users_event()
-        await asyncio.wait([user.send(message) for user in USERS])
+        await asyncio.wait([user.send(message) for user in users])
 
 
 async def notify_bombs():
-    if BOMBS:
+    if bombs:
         message = bombs_event()
-        await asyncio.wait([user.send(message) for user in USERS])
+        await asyncio.wait([user.send(message) for user in users])
 
 
 async def notify_chunks():
-    if CHUNKS:
+    if chunks:
         message = chunks_event()
-        await asyncio.wait([user.send(message) for user in USERS])
+        await asyncio.wait([user.send(message) for user in users])
 
 
 async def register(websocket):
-    USERS.add(websocket)
+    users.add(websocket)
     await notify_users()
-    await notify_chunks()
 
 
 async def unregister(websocket):
-    USERS.remove(websocket)
+    users.remove(websocket)
     await notify_users()
 
 
@@ -102,10 +98,10 @@ async def incoming_socket(websocket, path):
         async for message in websocket:
             data = json.loads(message)
             if data["action"] == "minus":
-                STATE["value"] -= 1
+                USERS["count"] -= 1
                 await notify_users()
             elif data["action"] == "plus":
-                STATE["value"] += 1
+                USERS["count"] += 1
                 await notify_users()
             else:
                 logging.error("unsupported event: %s", data)
