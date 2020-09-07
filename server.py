@@ -86,6 +86,7 @@ async def notify_chunks():
 async def register(websocket):
     USERS.add(websocket)
     await notify_users()
+    await notify_chunks()
 
 
 async def unregister(websocket):
