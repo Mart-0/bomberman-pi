@@ -83,15 +83,15 @@ async def incoming_socket(websocket, path):
     # register(websocket) sends user_event() to websocket
     await register(websocket)
     try:
-        await websocket.send(bombs_event())
+        # await websocket.send(bombs_event())
         async for message in websocket:
             data = json.loads(message)
             if data["action"] == "minus":
                 STATE["value"] -= 1
-                await notify_bombs()
+                await notify_users()
             elif data["action"] == "plus":
                 STATE["value"] += 1
-                await notify_bombs()
+                await notify_users()
             else:
                 logging.error("unsupported event: %s", data)
     finally:
