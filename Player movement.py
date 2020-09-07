@@ -27,11 +27,10 @@ class setInterval:
 
     def __setInterval(self):
         global playerKeys
-        self.action()
+        # self.action()
         nextTime = time.time() + self.interval
         while not self.stopEvent.wait(nextTime - time.time()):
             nextTime += self.interval
-            playerKeys = {"u": 0, "d": 0, "l": 0, "r": 0}
             self.action()
 
     def cancel(self):
@@ -66,6 +65,12 @@ def move_player_right():
         Player_1["position"]["x"] += 1
 
 
+def stop(dir):
+    global playerKeys
+    playerKeys[dir] = 0
+    print(playerKeys)
+
+
 def move_up(event):
     global Player_1, inter, playerKeys
     if (
@@ -88,6 +93,7 @@ def move_down(event):
     ):
         playerKeys["d"] = 1
         inter = setInterval(playerSpeed, move_player_down)
+        # stop("d")
     elif event.action == "released":
         inter.cancel()
 
