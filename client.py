@@ -64,26 +64,28 @@ class WebsocketThread(threading.Thread):
     def run(self):
         asyncio.new_event_loop().run_until_complete(incoming_socket())
 
-    async def incoming_socket(self):
-        uri = config.server["host"]
-        async with websockets.connect(uri) as websocket:
-            while True:
-                message = await websocket.recv()
-                data = json.loads(message)
 
-                if data["type"] == "users":
-                    # USERS = data["data"]
-                    logging.info("%s", data["count"])
-                elif data["type"] == "bombs":
-                    bombs = data["data"]
-                    # logging.info("%s", data)
-                elif data["type"] == "chunks":
-                    chunks = data["data"]
-                    # logging.info("%s", data["data"])
-                    # logging.info("%s", chunks[0]["grid"])
-                    build_world(data["data"])
-                else:
-                    logging.error("unsupported event: %s", data)
+async def incoming_socket():
+    global chunks
+    uri = config.server["host"]
+    async with websockets.connect(uri) as websocket:
+        while True:
+            message = await websocket.recv()
+            data = json.loads(message)
+
+            if data["type"] == "users":
+                # USERS = data["data"]
+                logging.info("%s", data["count"])
+            elif data["type"] == "bombs":
+                bombs = data["data"]
+                # logging.info("%s", data)
+            elif data["type"] == "chunks":
+                chunks = data["data"]
+                # logging.info("%s", data["data"])
+                # logging.info("%s", chunks[0]["grid"])
+                # build_world(data["data"])
+            else:
+                logging.error("unsupported event: %s", data)
 
 
 def draw_player():
@@ -174,41 +176,18 @@ sense.stick.direction_right = move_right
 sense.stick.direction_middle = stop
 
 
-async def incoming_socket():
-    uri = config.server["host"]
-    async with websockets.connect(uri) as websocket:
-        while True:
-            message = await websocket.recv()
-            data = json.loads(message)
+def build_world():
+    global chunks
+    print(chunks)
+    
+    # flat_chunk_data 
+    # O = (0, 0, 0)
+    # TW = (140, 140, 200)
+    # PW = (100, 48, 48)
 
-            if data["type"] == "users":
-                # USERS = data["data"]
-                logging.info("%s", data["count"])
-            elif data["type"] == "bombs":
-                bombs = data["data"]
-                # logging.info("%s", data)
-            elif data["type"] == "chunks":
-                chunks = data["data"]
-                # logging.info("%s", data["data"])
-                # logging.info("%s", chunks[0]["grid"])
-                build_world(data["data"])
-            else:
-                logging.error("unsupported event: %s", data)
-
-
-def build_world(chunks):
-    flat_chunk_data = []
-    for sublist in chunks[0]["grid"]:
-        for item in sublist:
-            flat_chunk_data.append(item)
-
-    O = (0, 0, 0)
-    TW = (140, 140, 200)
-    PW = (100, 48, 48)
-
-    dic = {2: PW, 1: TW, 0: O}
-    pixels = [dic.get(n, n) for n in flat_chunk_data]
-    sense.set_pixels(pixels)
+    # dic = {2: PW, 1: TW, 0: O}
+    # pixels = [dic.get(n, n) for n in flat_chunk_data]
+    # sense.set_pixels(pixels)
 
 
 server = WebsocketThread()
@@ -218,18 +197,9 @@ server.start()
 def game_loop():
     while running:
         draw_player()
+        build_world()
         time.sleep(0.05)
-        # sense.clear(0, 0, 0)
+        sense.clear(0, 0, 0)
 
 
 game_loop()
-
-
-# asyncio.get_event_loop().run_until_complete(incoming_socket())
-
-
-# if __name__ == "__main__":
-#     loop = asyncio.new_event_loop()
-
-#     threading.Thread(target=game_loop).start()
-#     threading.Thread(target=socket_loop).start()

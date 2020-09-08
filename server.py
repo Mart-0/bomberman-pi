@@ -35,7 +35,7 @@ arrvalspot = 0
 flat_chunk_data = numpy.array(flat_chunk_data)
 for x in flat_chunk_data:
     if x == 0:
-        randnum = random.randint(1,2)
+        randnum = random.randint(1, 2)
         if randnum == 1:
             randnum = 0
         flat_chunk_data[arrvalspot] = randnum
@@ -53,7 +53,7 @@ def bombs_event():
 
 
 def chunks_event():
-    return json.dumps({"type": "chunks", "data": chunks})
+    return json.dumps({"type": "chunks", "data": flat_chunk_data})
 
 
 async def notify_users():
