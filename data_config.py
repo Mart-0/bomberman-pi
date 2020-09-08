@@ -121,7 +121,7 @@ chunks = [
 ]
 
 # posities en kleuren moeten nog worden aangepast.
-users = [
+players = [
     {"position": {"X": 3, "Y": 3, "x": 2, "y": 6}, "color": (255, 255, 0)},
     {"position": {"X": 3, "Y": 3, "x": 6, "y": 6}, "color": (0, 255, 0)},
     {"position": {"X": 3, "Y": 3, "x": 7, "y": 4}, "color": (0, 255, 255)},
