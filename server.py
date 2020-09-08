@@ -64,6 +64,9 @@ def bombs_event():
 def chunks_event():
     return json.dumps({"type": "chunks", "data": chunks})
 
+def players_event():
+    return json.dumps({"type": "players", "data": players})
+
 
 async def notify_users():
     if users:
@@ -87,6 +90,7 @@ async def register(websocket):
     users.add(websocket)
     await notify_chunks()
     await notify_bombs()
+    await notify_players()
 
 
 async def unregister(websocket):
