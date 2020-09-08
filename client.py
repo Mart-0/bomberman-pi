@@ -177,9 +177,10 @@ sense.stick.direction_middle = stop
 
 
 def build_world():
-    global chunks, bombs
-    print(bombs)
+    global chunks
+    print(chunks)
 
+    
     # flat_chunk_data
     # O = (0, 0, 0)
     # TW = (140, 140, 200)
