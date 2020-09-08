@@ -7,7 +7,7 @@ R = (255, 0, 0)
 G = (0, 255, 0)
 B = (0, 0, 255)
 
-player = {"position": {"x": 1, "y": 4}}
+player = {"position": {"x": 4, "y": 4}}
 
 StartTime = time.time()
 
