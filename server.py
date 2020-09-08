@@ -23,7 +23,7 @@ class Chunk:
 
 
 users = set()
-bombs = set()
+bombs = [{"position": {"X": 1, "Y": 1, "x": 2, "y": 2}}]
 chunks = data_config.chunks
 
 flat_chunk_data = []
@@ -76,6 +76,7 @@ async def notify_chunks():
 
 async def register(websocket):
     users.add(websocket)
+    await notify_bombs()
     await notify_chunks()
 
 
