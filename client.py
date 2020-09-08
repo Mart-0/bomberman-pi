@@ -24,7 +24,7 @@ G = (0, 255, 0)
 B = (0, 0, 255)
 
 
-player = {"position": {"X": 0, "Y": 0, "x": 2, "y": 2}, "id": 0}
+player = 0
 players = set()
 
 StartTime = time.time()
@@ -38,6 +38,8 @@ running = 1
 users = set()
 bombs = set()
 chunks = []
+
+server = set()
 
 
 class setInterval:
@@ -59,69 +61,13 @@ class setInterval:
         self.stopEvent.set()
 
 
-# class UpdateThread(threading.Thread):
-#     def __init__(self):
-#         threading.Thread.__init__(self)
+async def update_player():
+    global server, player
 
-#     def player(self):
-#         asyncio.new_event_loop().run_until_complete(update_player())
+    json_player = json.dumps({"action": "update_player", "data": player})
+    await server.send(json_player)
+    logging.info("%s", "player send")
 
-
-# update_thread = UpdateThread()
-
-
-# async def update_player():
-#     global player
-
-#     uri = config.server["host"]
-#     async with websockets.connect(uri) as websocket:
-#         json_player = json.dumps({"action": "update_player", "data": player})
-#         await websocket.send(json_player)
-
-
-# class SendThread(threading.Thread):
-#     global chunks, bombs, player, players, running
-
-#     def __init__(self):
-#         threading.Thread.__init__(self)
-
-#     def player(self):
-#         while True:
-#             print("d")
-
-
-# class RecvThread(threading.Thread):
-#     def __init__(self, websocket):
-#         threading.Thread.__init__(self)
-#         self.websocket = websocket
-
-#     def run(self):
-#         recv_loop(self.websocket)
-        
-
-
-# def recv_loop(websocket):
-#     global chunks, bombs, player, players, running
-
-#     while True:
-#         message = await websocket.recv()
-#         data = json.loads(message)
-
-#         if data["type"] == "users":
-#             player["id"] = data["count"]
-#             players = data["data"]
-#             logging.info("players connected: %s", data["count"])
-#         elif data["type"] == "bombs":
-#             bombs = data["data"]
-#             logging.info("%s", "boms(s) loaded!")
-#         elif data["type"] == "players":
-#             players = data["data"]
-#             logging.info("%s", "players loaded!")
-#         elif data["type"] == "chunks":
-#             chunks = data["data"]
-#             logging.info("%s", "chunks loaded!")
-#         else:
-#             logging.error("unsupported event: %s", data)
 
 class WebsocketThread(threading.Thread):
     def __init__(self):
@@ -130,41 +76,46 @@ class WebsocketThread(threading.Thread):
     def run(self):
         try:
             asyncio.new_event_loop().run_until_complete(incoming_socket())
-        finally:
-            stop()
+        except Exception as e:
+            logging.error("error: %s", e)
             logging.error("%s", "The server is closed or not connected!")
-            sys.exit()
+            stop()
 
 
 async def incoming_socket():
-    global chunks, bombs, player, players, running
+    global chunks, bombs, player, players, running, server
     uri = config.server["host"]
     async with websockets.connect(uri) as websocket:
         logging.info("%s", "The server is conneced!")
 
+        server = websocket
         while True:
             message = await websocket.recv()
             data = json.loads(message)
 
             if data["type"] == "users":
-                player["id"] = data["count"]
-                players = data["data"]
+                if player == 0:
+                    player = data["data"]
+                    logging.info("id: %s", data["data"]["id"])
                 logging.info("players connected: %s", data["count"])
             elif data["type"] == "bombs":
                 bombs = data["data"]
-                logging.info("%s", "boms(s) loaded!")
+                logging.info("%s", "bombs loaded")
             elif data["type"] == "players":
                 players = data["data"]
-                logging.info("%s", "players loaded!")
+                logging.info("%s", "players loaded")
             elif data["type"] == "chunks":
                 chunks = data["data"]
-                logging.info("%s", "chunks loaded!")
+                logging.info("%s", "chunks loaded")
             else:
                 logging.error("unsupported event: %s", data)
 
 
 def draw_player():
-    sense.set_pixel(player["position"]["x"], player["position"]["y"], G)
+    if player:
+        sense.set_pixel(
+            player["position"]["x"], player["position"]["y"], player["color"]
+        )
 
 
 def start_move(dir):
@@ -189,7 +140,7 @@ def move_player(dir, r):
 
     if s == 0 or s == 1:
         player["position"] = new_position
-        # update_thread.player()
+        asyncio.new_event_loop().run_until_complete(update_player())
 
 
 def check_position(x, y):
@@ -262,8 +213,9 @@ def move_right(event):
 
 
 def stop():
-    global running
+    global running, server
     running = 0
+    sys.exit()
 
 
 sense.stick.direction_up = move_up

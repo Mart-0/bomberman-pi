@@ -7,6 +7,7 @@ import websockets
 import numpy
 import random
 import data_config
+import sys
 
 logging.basicConfig(
     level=logging.INFO,
@@ -29,6 +30,8 @@ bombs = [
 ]
 chunks = data_config.chunks.copy()
 
+id = 1
+
 i = 0
 for chunk in chunks:
     flat_chunk_data = []
@@ -47,7 +50,26 @@ for chunk in chunks:
 
 
 def users_event():
-    return json.dumps({"type": "users", "count": len(users), "data": players})
+    global id
+
+    json_users = json.dumps(
+        {"type": "users", "count": len(users), "data": get_user(id)}
+    )
+    id += 1
+    return json_users
+
+
+def get_user(id):
+    global players
+    i = 0
+    for player in players:
+        if player["id"]:
+            if player["id"] == id:
+                break
+            else:
+                i += 1
+
+    return players[i]
 
 
 def bombs_event():
@@ -92,13 +114,26 @@ async def register(websocket):
     await notify_users()
     await notify_chunks()
     # await notify_bombs()
-    # await notify_players()
+    await notify_players()
 
 
 async def unregister(websocket):
     users.remove(websocket)
     logging.info("players connected: %s", len(users))
     await notify_users()
+
+
+def update_player(data):
+    global players
+    i = 0
+    for player in players:
+        if player["id"]:
+            if player["id"] == data["data"]["id"]:
+                break
+            else:
+                i += 1
+
+    players[i]["position"] = data["data"]["position"]
 
 
 async def incoming_socket(websocket, path):
@@ -111,17 +146,24 @@ async def incoming_socket(websocket, path):
             data = json.loads(message)
             if data["action"] == "update_player":
                 logging.info("%s", data)
+                update_player(data)
                 await notify_players()
             else:
                 logging.error("unsupported event: %s", data)
-    finally:
+    except Exception as e:
+        logging.error("error: %s", e)
+        logging.error("conection closed!")
         await unregister(websocket)
 
+
 start_server = websockets.serve(incoming_socket, "192.168.2.10", 8765)
+
 
 try:
     asyncio.get_event_loop().run_until_complete(start_server)
     logging.info("server running!")
     asyncio.get_event_loop().run_forever()
-finally:
+except Exception as e:
+    logging.error("error: %s", e)
     logging.error("server can't start!")
+    sys.exit()
