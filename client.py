@@ -224,7 +224,6 @@ def show_bombs():
 
 def show_players():
     for player in players:
-        print(player["color"])
         sense.set_pixel(
             player["position"]["x"], player["position"]["y"], player["color"]
         )
