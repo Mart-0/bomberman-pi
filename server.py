@@ -35,22 +35,15 @@ for chunk in chunks:
     for sublist in chunk["grid"]:
         for item in sublist:
             flat_chunk_data.append(item)
+
+    a = 0
+    for x in flat_chunk_data:
+        if x == 1:
+            flat_chunk_data[a] = random.randint(1, 2)
+        a += 1
+
     chunks[i]["grid"] = flat_chunk_data
     i += 1
-
-
-# arrvalspot = 0
-# flat_chunk_data = numpy.array(flat_chunk_data)
-# for x in flat_chunk_data:
-#     if x == 0:
-#         randnum = random.randint(1, 2)
-#         if randnum == 1:
-#             randnum = 0
-#         flat_chunk_data[arrvalspot] = randnum
-#     arrvalspot += 1
-
-# print(flat_chunk_data)
-# print(chunks)
 
 
 def users_event():
@@ -63,6 +56,7 @@ def bombs_event():
 
 def chunks_event():
     return json.dumps({"type": "chunks", "data": chunks})
+
 
 def players_event():
     return json.dumps({"type": "players", "data": players})
@@ -86,36 +80,48 @@ async def notify_chunks():
         await asyncio.wait([user.send(message) for user in users])
 
 
+async def notify_players():
+    if chunks:
+        message = players_event()
+        await asyncio.wait([user.send(message) for user in users])
+
+
 async def register(websocket):
     users.add(websocket)
+    logging.info("players connected: %s", len(users))
     await notify_users()
     await notify_chunks()
-    await notify_bombs()
-    await notify_players()
+    # await notify_bombs()
+    # await notify_players()
 
 
 async def unregister(websocket):
     users.remove(websocket)
+    logging.info("players connected: %s", len(users))
     await notify_users()
 
 
 async def incoming_socket(websocket, path):
     # register(websocket) sends user_event() to websocket
+
     await register(websocket)
     try:
         await websocket.send(chunks_event())
         async for message in websocket:
             data = json.loads(message)
             if data["action"] == "update_player":
-                print(data)
-                await notify_users()
+                logging.info("%s", data)
+                await notify_players()
             else:
                 logging.error("unsupported event: %s", data)
     finally:
         await unregister(websocket)
 
-
 start_server = websockets.serve(incoming_socket, "192.168.2.10", 8765)
 
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+try:
+    asyncio.get_event_loop().run_until_complete(start_server)
+    logging.info("server running!")
+    asyncio.get_event_loop().run_forever()
+finally:
+    logging.error("server can't start!")
