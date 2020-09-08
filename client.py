@@ -101,12 +101,33 @@ def start_move(dir):
 
 def move_player(dir, r):
     global player
+
+    new_position = player["position"].copy()
+
     if r == 1:
         if player["position"][dir] < 7:
-            player["position"][dir] += 1
+            new_position[dir] += 1
     else:
         if player["position"][dir] > 0:
-            player["position"][dir] -= 1
+            new_position[dir] -= 1
+    s = check_position(new_position["x"], new_position["y"])
+
+    if s == 0:
+        player["position"] = new_position
+
+
+def check_position(x, y):
+    global chunks
+
+    index = ((y) * 8) + x
+
+    i = 0
+    for chunk in chunks:
+        if i == 0:
+            grid = chunk["grid"]
+        i += 1
+
+    return grid[index]
 
 
 def check_keys():
