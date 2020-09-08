@@ -66,7 +66,7 @@ class WebsocketThread(threading.Thread):
 
 
 async def incoming_socket():
-    global chunks
+    global chunks, bombs
     uri = config.server["host"]
     async with websockets.connect(uri) as websocket:
         while True:
@@ -78,7 +78,7 @@ async def incoming_socket():
                 logging.info("%s", data["count"])
             elif data["type"] == "bombs":
                 bombs = data["data"]
-                # logging.info("%s", data)
+                logging.info("%s", data)
             elif data["type"] == "chunks":
                 chunks = data["data"]
                 # logging.info("%s", data["data"])
@@ -177,10 +177,10 @@ sense.stick.direction_middle = stop
 
 
 def build_world():
-    global chunks
-    print(chunks)
-    
-    # flat_chunk_data 
+    global chunks, bombs
+    print(bombs)
+
+    # flat_chunk_data
     # O = (0, 0, 0)
     # TW = (140, 140, 200)
     # PW = (100, 48, 48)
