@@ -4,6 +4,8 @@ import asyncio
 import json
 import logging
 import websockets
+import numpy
+import random
 
 logging.basicConfig(
     level=logging.INFO,
@@ -28,7 +30,7 @@ chunks = [
             [1, 1, 0, 1, 0, 1, 0, 1],
             [1, 0, 0, 0, 0, 0, 0, 0],
             [1, 1, 0, 1, 0, 1, 0, 1],
-            [1, 2, 0, 0, 0, 0, 0, 0],
+            [1, 0, 0, 0, 0, 0, 0, 0],
             [1, 1, 0, 1, 0, 1, 0, 1],
             [1, 0, 0, 0, 0, 0, 0, 0],
             [1, 1, 0, 1, 0, 1, 0, 1],
@@ -49,6 +51,22 @@ chunks = [
     },
 ]
 
+flat_chunk_data = []
+for sublist in chunks[0]["grid"]:
+    for item in sublist:
+        flat_chunk_data.append(item)
+
+arrvalspot = 0
+flat_chunk_data = numpy.array(flat_chunk_data)
+for x in flat_chunk_data:
+    if x == 0:
+        randnum = random.randint(1,2)
+        if randnum == 1:
+            randnum = 0
+        flat_chunk_data[arrvalspot] = randnum
+    arrvalspot += 1
+
+print(flat_chunk_data)
 
 def users_event():
     return json.dumps({"type": "users", "count": len(users)})
