@@ -21,7 +21,7 @@ class Chunk:
         self.grid = grid
 
 
-players = data_config.player.copy()
+players = data_config.players.copy()
 users = set()
 bombs = [
     {"position": {"X": 1, "Y": 1, "x": 2, "y": 2}},
