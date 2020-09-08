@@ -23,7 +23,8 @@ G = (0, 255, 0)
 B = (0, 0, 255)
 
 
-player = {"position": {"x": 4, "y": 4}}
+player = {"position": {"X": 0, "Y": 0, "x": 4, "y": 4}, "id": 0}
+players = set()
 
 StartTime = time.time()
 
@@ -57,6 +58,23 @@ class setInterval:
         self.stopEvent.set()
 
 
+class UpdateThread(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+
+    def run(self):
+        asyncio.new_event_loop().run_until_complete(incoming_socket())
+
+
+async def update_player():
+    global player
+
+    uri = config.server["host"]
+    async with websockets.connect(uri) as websocket:
+
+        await websocket.send(player)
+
+
 class WebsocketThread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
@@ -66,7 +84,7 @@ class WebsocketThread(threading.Thread):
 
 
 async def incoming_socket():
-    global chunks, bombs
+    global chunks, bombs, player, players
     uri = config.server["host"]
     async with websockets.connect(uri) as websocket:
         while True:
@@ -74,16 +92,17 @@ async def incoming_socket():
             data = json.loads(message)
 
             if data["type"] == "users":
-                # USERS = data["data"]
+                player["id"] = data["count"]
+                players = data["data"]
+
                 logging.info("%s", data["count"])
+                logging.info("%s", data["data"])
             elif data["type"] == "bombs":
                 bombs = data["data"]
                 logging.info("%s", data)
             elif data["type"] == "chunks":
                 chunks = data["data"]
-                # logging.info("%s", data["data"])
-                # logging.info("%s", chunks[0]["grid"])
-                # build_world(data["data"])
+                logging.info("%s", "chunks loaded!")
             else:
                 logging.error("unsupported event: %s", data)
 
@@ -114,6 +133,7 @@ def move_player(dir, r):
 
     if s == 0 or s == 1:
         player["position"] = new_position
+        # update_player()
 
 
 def check_position(x, y):
@@ -202,6 +222,14 @@ def show_bombs():
         sense.set_pixel(bomb["position"]["x"], bomb["position"]["y"], R)
 
 
+def show_players():
+    for player in players:
+        print(player["color"])
+        sense.set_pixel(
+            player["position"]["x"], player["position"]["y"], player["color"]
+        )
+
+
 def build_world():
     global chunks
     grid = 0
@@ -228,6 +256,7 @@ server.start()
 def game_loop():
     while running:
         build_world()
+        show_players()
         show_bombs()
         draw_player()
         time.sleep(0.05)

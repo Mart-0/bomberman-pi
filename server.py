@@ -54,7 +54,7 @@ for chunk in chunks:
 
 
 def users_event():
-    return json.dumps({"type": "users", "count": len(users)})
+    return json.dumps({"type": "users", "count": len(users), "data": players})
 
 
 def bombs_event():
@@ -85,6 +85,7 @@ async def notify_chunks():
 
 async def register(websocket):
     users.add(websocket)
+    await notify_users()
     await notify_chunks()
     await notify_bombs()
 
@@ -101,11 +102,8 @@ async def incoming_socket(websocket, path):
         await websocket.send(chunks_event())
         async for message in websocket:
             data = json.loads(message)
-            if data["action"] == "minus":
-                USERS["count"] -= 1
-                await notify_users()
-            elif data["action"] == "plus":
-                USERS["count"] += 1
+            if data["action"] == "update_player":
+                print(data)
                 await notify_users()
             else:
                 logging.error("unsupported event: %s", data)
