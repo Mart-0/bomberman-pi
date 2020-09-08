@@ -21,7 +21,10 @@ class Chunk:
 
 
 users = set()
-bombs = [{"position": {"X": 1, "Y": 1, "x": 2, "y": 2}}]
+bombs = [
+    {"position": {"X": 1, "Y": 1, "x": 2, "y": 2}},
+    {"position": {"X": 1, "Y": 1, "x": 2, "y": 4}},
+]
 chunks = [
     {
         "position": {"x": 1, "y": 1},
@@ -108,6 +111,7 @@ async def notify_chunks():
 async def register(websocket):
     users.add(websocket)
     await notify_chunks()
+    await notify_bombs()
 
 
 async def unregister(websocket):

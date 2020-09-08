@@ -197,6 +197,11 @@ sense.stick.direction_right = move_right
 sense.stick.direction_middle = stop
 
 
+def show_bombs():
+    for bomb in bombs:
+        sense.set_pixel(bomb["position"]["x"], bomb["position"]["y"], R)
+
+
 def build_world():
     global chunks
     grid = 0
@@ -223,6 +228,7 @@ server.start()
 def game_loop():
     while running:
         build_world()
+        show_bombs()
         draw_player()
         time.sleep(0.05)
         sense.clear(0, 0, 0)
