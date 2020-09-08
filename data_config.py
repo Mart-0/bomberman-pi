@@ -122,10 +122,10 @@ chunks = [
 
 # posities en kleuren moeten nog worden aangepast.
 players = [
-    {"position": {"X": 3, "Y": 3, "x": 2, "y": 6}, "color": (255, 255, 0)},
-    {"position": {"X": 3, "Y": 3, "x": 6, "y": 6}, "color": (0, 255, 0)},
-    {"position": {"X": 3, "Y": 3, "x": 7, "y": 4}, "color": (0, 255, 255)},
-    {"position": {"X": 3, "Y": 3, "x": 7, "y": 1}, "color": (0, 0, 255)},
-    {"position": {"X": 3, "Y": 3, "x": 2, "y": 0}, "color": (127, 0, 255)},
-    {"position": {"X": 3, "Y": 3, "x": 1, "y": 3}, "color": (255, 0, 255)},
+    {"position": {"X": 1, "Y": 1, "x": 2, "y": 2}, "color": (255, 255, 0)},
+    {"position": {"X": 1, "Y": 1, "x": 5, "y": 5}, "color": (0, 255, 0)},
+    {"position": {"X": 1, "Y": 1, "x": 2, "y": 5}, "color": (0, 255, 255)},
+    {"position": {"X": 1, "Y": 1, "x": 5, "y": 2}, "color": (0, 0, 255)},
+    {"position": {"X": 1, "Y": 1, "x": 0, "y": 5}, "color": (127, 0, 255)},
+    {"position": {"X": 1, "Y": 1, "x": 7, "y": 2}, "color": (255, 0, 255)},
 ]
