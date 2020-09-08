@@ -49,7 +49,8 @@ chunks = [
     },
 ]
 
-chunks[chunks = 0] = 2
+for x in grid:
+    print(x)
 
 print(chunks)
 
