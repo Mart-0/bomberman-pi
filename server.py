@@ -6,6 +6,7 @@ import logging
 import websockets
 import numpy
 import random
+import data_config
 
 logging.basicConfig(
     level=logging.INFO,
@@ -20,39 +21,13 @@ class Chunk:
         self.grid = grid
 
 
+players = data_config.player.copy()
 users = set()
 bombs = [
     {"position": {"X": 1, "Y": 1, "x": 2, "y": 2}},
     {"position": {"X": 1, "Y": 1, "x": 2, "y": 4}},
 ]
-chunks = [
-    {
-        "position": {"x": 1, "y": 1},
-        "grid": [
-            [1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 0, 1, 0, 1, 0, 1],
-            [1, 0, 0, 0, 0, 0, 0, 0],
-            [1, 1, 0, 1, 0, 1, 0, 1],
-            [1, 0, 0, 0, 0, 0, 0, 0],
-            [1, 1, 0, 1, 0, 1, 0, 1],
-            [1, 0, 0, 1, 0, 0, 0, 0],
-            [1, 1, 0, 1, 0, 1, 0, 1],
-        ],
-    },
-    {
-        "position": {"x": 2, "y": 1},
-        "grid": [
-            [0, 1, 1, 1, 1, 1, 1, 1],
-            [0, 1, 1, 1, 1, 1, 1, 1],
-            [0, 1, 1, 1, 1, 1, 1, 1],
-            [0, 1, 1, 0, 0, 0, 0, 0],
-            [0, 1, 1, 0, 0, 0, 0, 0],
-            [0, 1, 1, 0, 0, 0, 0, 0],
-            [0, 1, 1, 0, 0, 0, 0, 0],
-            [0, 1, 1, 0, 0, 0, 0, 0],
-        ],
-    },
-]
+chunks = data_config.chunks.copy()
 
 i = 0
 for chunk in chunks:
