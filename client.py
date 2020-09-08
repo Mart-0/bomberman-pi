@@ -178,17 +178,21 @@ sense.stick.direction_middle = stop
 
 def build_world():
     global chunks
-    print(chunks)
+    grid = 0
+    i = 0
+    for chunk in chunks:
+        if i == 0:
+            grid = chunk["grid"]
+        i += 1
 
-    
-    # flat_chunk_data
-    # O = (0, 0, 0)
-    # TW = (140, 140, 200)
-    # PW = (100, 48, 48)
+    if grid:
+        O = (0, 0, 0)
+        TW = (140, 140, 200)
+        PW = (100, 48, 48)
 
-    # dic = {2: PW, 1: TW, 0: O}
-    # pixels = [dic.get(n, n) for n in flat_chunk_data]
-    # sense.set_pixels(pixels)
+        dic = {2: PW, 1: TW, 0: O}
+        pixels = [dic.get(n, n) for n in grid]
+        sense.set_pixels(pixels)
 
 
 server = WebsocketThread()
@@ -197,8 +201,8 @@ server.start()
 
 def game_loop():
     while running:
-        draw_player()
         build_world()
+        draw_player()
         time.sleep(0.05)
         sense.clear(0, 0, 0)
 

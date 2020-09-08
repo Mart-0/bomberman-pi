@@ -54,12 +54,12 @@ chunks = [
 i = 0
 for chunk in chunks:
     flat_chunk_data = []
-    for sublist in chunks[i]["grid"]:
+    for sublist in chunk["grid"]:
         for item in sublist:
             flat_chunk_data.append(item)
     chunks[i]["grid"] = flat_chunk_data
+    i += 1
 
-print(chunks)
 
 # arrvalspot = 0
 # flat_chunk_data = numpy.array(flat_chunk_data)
