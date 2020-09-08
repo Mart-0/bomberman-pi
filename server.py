@@ -49,9 +49,6 @@ chunks = [
     },
 ]
 
-chunks[chunks = 0] = 2
-
-print(chunks)
 
 def users_event():
     return json.dumps({"type": "users", "count": len(users)})
@@ -85,7 +82,7 @@ async def notify_chunks():
 
 async def register(websocket):
     users.add(websocket)
-    await notify_users()
+    await notify_chunks()
 
 
 async def unregister(websocket):
