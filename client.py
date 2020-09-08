@@ -112,7 +112,7 @@ def move_player(dir, r):
             new_position[dir] -= 1
     s = check_position(new_position["x"], new_position["y"])
 
-    if s == 0:
+    if s == 0 or s == 1:
         player["position"] = new_position
 
 
@@ -213,10 +213,10 @@ def build_world():
 
     if grid:
         O = (0, 0, 0)
-        TW = (140, 140, 200)
-        PW = (100, 48, 48)
+        PW = (140, 140, 200)
+        TW = (100, 48, 48)
 
-        dic = {2: PW, 1: TW, 0: O}
+        dic = {0: O, 1: O, 2: TW, 3: PW}
         pixels = [dic.get(n, n) for n in grid]
         sense.set_pixels(pixels)
 
