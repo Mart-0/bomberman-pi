@@ -6,8 +6,6 @@ import logging
 import websockets
 import numpy
 import random
-import data_config
-
 
 logging.basicConfig(
     level=logging.INFO,
@@ -24,24 +22,57 @@ class Chunk:
 
 users = set()
 bombs = [{"position": {"X": 1, "Y": 1, "x": 2, "y": 2}}]
-chunks = data_config.chunks
+chunks = [
+    {
+        "position": {"x": 1, "y": 1},
+        "grid": [
+            [1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 0, 1, 0, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0],
+            [1, 1, 0, 1, 0, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0],
+            [1, 1, 0, 1, 0, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0],
+            [1, 1, 0, 1, 0, 1, 0, 1],
+        ],
+    },
+    {
+        "position": {"x": 2, "y": 1},
+        "grid": [
+            [0, 1, 1, 1, 1, 1, 1, 1],
+            [0, 1, 1, 1, 1, 1, 1, 1],
+            [0, 1, 1, 1, 1, 1, 1, 1],
+            [0, 1, 1, 0, 0, 0, 0, 0],
+            [0, 1, 1, 0, 0, 0, 0, 0],
+            [0, 1, 1, 0, 0, 0, 0, 0],
+            [0, 1, 1, 0, 0, 0, 0, 0],
+            [0, 1, 1, 0, 0, 0, 0, 0],
+        ],
+    },
+]
 
-flat_chunk_data = []
-for sublist in chunks[0]["grid"]:
-    for item in sublist:
-        flat_chunk_data.append(item)
+i = 0
+for chunk in chunks:
+    flat_chunk_data = []
+    for sublist in chunks[i]["grid"]:
+        for item in sublist:
+            flat_chunk_data.append(item)
+    chunks[i]["grid"] = flat_chunk_data
 
-arrvalspot = 0
-flat_chunk_data = numpy.array(flat_chunk_data)
-for x in flat_chunk_data:
-    if x == 0:
-        randnum = random.randint(1, 2)
-        if randnum == 1:
-            randnum = 0
-        flat_chunk_data[arrvalspot] = randnum
-    arrvalspot += 1
+print(chunks)
 
-print(flat_chunk_data)
+# arrvalspot = 0
+# flat_chunk_data = numpy.array(flat_chunk_data)
+# for x in flat_chunk_data:
+#     if x == 0:
+#         randnum = random.randint(1, 2)
+#         if randnum == 1:
+#             randnum = 0
+#         flat_chunk_data[arrvalspot] = randnum
+#     arrvalspot += 1
+
+# print(flat_chunk_data)
+# print(chunks)
 
 
 def users_event():
@@ -53,7 +84,7 @@ def bombs_event():
 
 
 def chunks_event():
-    return json.dumps({"type": "chunks", "data": flat_chunk_data})
+    return json.dumps({"type": "chunks", "data": chunks})
 
 
 async def notify_users():
@@ -76,7 +107,6 @@ async def notify_chunks():
 
 async def register(websocket):
     users.add(websocket)
-    await notify_bombs()
     await notify_chunks()
 
 
