@@ -6,6 +6,8 @@ import logging
 import websockets
 import numpy
 import random
+import data_config
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -22,34 +24,7 @@ class Chunk:
 
 users = set()
 bombs = set()
-chunks = [
-    {
-        "position": {"x": 1, "y": 1},
-        "grid": [
-            [1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 0, 1, 0, 1, 0, 1],
-            [1, 0, 0, 0, 0, 0, 0, 0],
-            [1, 1, 0, 1, 0, 1, 0, 1],
-            [1, 0, 0, 0, 0, 0, 0, 0],
-            [1, 1, 0, 1, 0, 1, 0, 1],
-            [1, 0, 0, 0, 0, 0, 0, 0],
-            [1, 1, 0, 1, 0, 1, 0, 1],
-        ],
-    },
-    {
-        "position": {"x": 2, "y": 1},
-        "grid": [
-            [0, 1, 1, 1, 1, 1, 1, 1],
-            [0, 1, 1, 1, 1, 1, 1, 1],
-            [0, 1, 1, 1, 1, 1, 1, 1],
-            [0, 1, 1, 0, 0, 0, 0, 0],
-            [0, 1, 1, 0, 0, 0, 0, 0],
-            [0, 1, 1, 0, 0, 0, 0, 0],
-            [0, 1, 1, 0, 0, 0, 0, 0],
-            [0, 1, 1, 0, 0, 0, 0, 0],
-        ],
-    },
-]
+chunks = data_config.chunks
 
 flat_chunk_data = []
 for sublist in chunks[0]["grid"]:
@@ -67,6 +42,7 @@ for x in flat_chunk_data:
     arrvalspot += 1
 
 print(flat_chunk_data)
+
 
 def users_event():
     return json.dumps({"type": "users", "count": len(users)})
