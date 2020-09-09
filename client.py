@@ -199,7 +199,7 @@ def move_up(event):
         start_move("u")
     elif event.action == "pressed" and player["position"]["y"] <= 0:
         player["position"]["Y"] -= 1
-        player["position"]["Y"] = 7
+        player["position"]["y"] = 7
     elif event.action == "released":
         playerKeys["u"] = 0
 
@@ -210,7 +210,7 @@ def move_down(event):
         start_move("d")
     elif event.action == "pressed" and player["position"]["y"] >= 7:
         player["position"]["Y"] += 1
-        player["position"]["Y"] = 0
+        player["position"]["y"] = 0
     elif event.action == "released":
         playerKeys["d"] = 0
 
