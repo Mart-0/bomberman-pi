@@ -139,12 +139,10 @@ def start_move(dir):
 
 
 def move_screen(dir, axis, pos):
-    global playerKeys, anti_spam
-    playerKeys[dir] = 1
-    set_interval()
-    anti_spam = 1
+    global player
     player["position"][axis] = pos
-
+    startmove(dir)
+    
 
 def move_player(dir, r):
     global player
