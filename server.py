@@ -227,56 +227,83 @@ class WebsocketThread(threading.Thread):
         # 145.44.96.127
         # 192.168.2.10
 
-        start_server = websockets.serve(incoming_socket, "192.168.2.10", 8765)
-        start_web_server = websockets.serve(website_socket, "192.168.2.10", 8766)
+        try:
+            start_server = websockets.serve(incoming_socket, "192.168.2.10", 8765)
+            start_web_server = websockets.serve(website_socket, "192.168.2.10", 8766)
+        except Exception as e:
+            logging.error("error: %s", e)
+            logging.error("server can't start!")
+            sys.exit()
 
         try:
-            asyncio.get_event_loop().run_until_complete(start_server)
-            asyncio.get_event_loop().run_until_complete(start_web_server)
+            # loop = asyncio.new_event_loop()
+            asyncio.new_event_loop.run_until_complete(start_server)
+            # loop.run_until_complete(start_web_server)
 
             logging.info("server running!")
-            asyncio.get_event_loop().run_forever()
         except Exception as e:
             logging.error("error: %s", e)
             logging.error("server can't start!")
             sys.exit()
 
 
-server = WebsocketThread()
-server.start()
+# server = WebsocketThread()
+# server.start()
 
-print("sd")
-
-
-class BombTimer(threading.Thread):
-    def __init__(self):
-        threading.Thread.__init__(self)
-        self.run()
-
-    def run(self):
-        asyncio.new_event_loop().run_until_complete(self.bomb_timer())
-
-    async def bomb_timer(self):
-        global bombs
-        start_time = time.time()
-        seconds = 0.1
-        print("ik draai")
-
-        while True:
-            current_time = time.time()
-            elapsed_time = current_time - start_time
-
-            await asyncio.sleep(1)
-
-            for bomb in bombs:
-                bomb["time"] -= 1
-                if sqrt(bomb["current_time"]) - sqrt(bomb["time"]) > 1:
-                    bomb["current_time"] = bomb["time"]
-                    bomb["flicker"] = not bomb["flicker"]
-                    print("flicker")
-
-                if bomb["time"] <= 0:
-                    break
+# print("sd")
 
 
-BombTimer()
+# class BombTimer(threading.Thread):
+#     def __init__(self):
+#         threading.Thread.__init__(self)
+#         self.run()
+
+#     def run(self):
+#         asyncio.get_event_loop().run_until_complete(self.bomb_timer())
+
+#     async def bomb_timer(self):
+#         global bombs
+#         start_time = time.time()
+#         seconds = 0.1
+#         print("ik draai")
+
+#         while True:
+#             current_time = time.time()
+#             elapsed_time = current_time - start_time
+
+#             await asyncio.sleep(1)
+
+#             for bomb in bombs:
+#                 bomb["time"] -= 1
+#                 if sqrt(bomb["current_time"]) - sqrt(bomb["time"]) > 1:
+#                     bomb["current_time"] = bomb["time"]
+#                     bomb["flicker"] = not bomb["flicker"]
+#                     print("flicker")
+
+#                 if bomb["time"] <= 0:
+#                     break
+
+
+# BombTimer()
+
+
+try:
+    start_server = websockets.serve(incoming_socket, "192.168.2.10", 8765)
+    start_web_server = websockets.serve(website_socket, "192.168.2.10", 8766)
+except Exception as e:
+    logging.error("error: %s", e)
+    logging.error("server can't start!")
+    sys.exit()
+
+try:
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(start_server)
+    loop.run_until_complete(start_web_server)
+
+    logging.info("server running!")
+    loop.run_forever()
+
+except Exception as e:
+    logging.error("error: %s", e)
+    logging.error("server can't start!")
+    sys.exit()

@@ -266,10 +266,17 @@ def build_world():
     global chunks
     grid = 0
     i = 0
+    # for chunk in chunks:
+    #     if i == 0:
+    #         grid = chunk["grid"]
+    #     i += 1
+
     for chunk in chunks:
-        if i == 0:
+        if (
+            chunk["position"]["x"] == player["position"]["X"]
+            and chunk["position"]["y"] == player["position"]["Y"]
+        ):
             grid = chunk["grid"]
-        i += 1
 
     if grid:
         O = (0, 0, 0)
