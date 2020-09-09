@@ -9,6 +9,8 @@ import random
 import data_config
 import sys
 import datetime
+import time
+import threading
 
 logging.basicConfig(
     level=logging.INFO,
@@ -30,6 +32,7 @@ bombs = []
 chunks = data_config.chunks.copy()
 
 id = 1
+
 
 i = 0
 for chunk in chunks:
@@ -215,19 +218,65 @@ async def website_socket(websocket, path):
         await unregister_dashboard(websocket)
 
 
-# 145.44.96.127
-# 192.168.2.10
-start_server = websockets.serve(incoming_socket, "192.168.2.10", 8765)
-start_web_server = websockets.serve(website_socket, "192.168.2.10", 8766)
+class WebsocketThread(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+
+    def run(self):
+        print("d")
+        # 145.44.96.127
+        # 192.168.2.10
+
+        start_server = websockets.serve(incoming_socket, "192.168.2.10", 8765)
+        start_web_server = websockets.serve(website_socket, "192.168.2.10", 8766)
+
+        try:
+            asyncio.get_event_loop().run_until_complete(start_server)
+            asyncio.get_event_loop().run_until_complete(start_web_server)
+
+            logging.info("server running!")
+            asyncio.get_event_loop().run_forever()
+        except Exception as e:
+            logging.error("error: %s", e)
+            logging.error("server can't start!")
+            sys.exit()
 
 
-try:
-    asyncio.get_event_loop().run_until_complete(start_server)
-    asyncio.get_event_loop().run_until_complete(start_web_server)
+server = WebsocketThread()
+server.start()
 
-    logging.info("server running!")
-    asyncio.get_event_loop().run_forever()
-except Exception as e:
-    logging.error("error: %s", e)
-    logging.error("server can't start!")
-    sys.exit()
+print("sd")
+
+
+class BombTimer(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.run()
+
+    def run(self):
+        asyncio.new_event_loop().run_until_complete(self.bomb_timer())
+
+    async def bomb_timer(self):
+        global bombs
+        start_time = time.time()
+        seconds = 0.1
+        print("ik draai")
+
+        while True:
+            current_time = time.time()
+            elapsed_time = current_time - start_time
+
+            await asyncio.sleep(1)
+
+            for bomb in bombs:
+                bomb["time"] -= 1
+                if sqrt(bomb["current_time"]) - sqrt(bomb["time"]) > 1:
+                    bomb["current_time"] = bomb["time"]
+                    bomb["flicker"] = not bomb["flicker"]
+                    print("flicker")
+
+                if bomb["time"] <= 0:
+                    break
+
+
+BombTimer()

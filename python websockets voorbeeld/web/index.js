@@ -6,15 +6,21 @@ const websocket = new WebSocket("ws://145.44.96.127:8766/");
 
 websocket.onmessage = ({ data }) => {
   data = JSON.parse(data);
-  console.log(data)
+
   const types = {
-    state: () => (value.textContent = data.value),
-    users: () => {
-      users.textContent = `${data.count.toString()} user ${
-        data.count === 1 ? "" : "s"
-      }`;
-    },
+    users: () => userCount(data),
+    players: () => displayPlayers(data),
   };
 
   types[data.type] && types[data.type]();
 };
+
+function userCount(data) {
+  console.log('user data!')
+  console.log(data)
+}
+
+function displayPlayers(data) {
+  console.log('user data!')
+  console.log(data)
+}

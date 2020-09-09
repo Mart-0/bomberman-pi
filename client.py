@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from sense_hat import SenseHat
-from multiprocessing import Process
 
 import config
 import asyncio
