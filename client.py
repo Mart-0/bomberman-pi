@@ -276,6 +276,8 @@ def show_players():
     #     ):
     #         enemy_players.add(enemy_player)
 
+    # print(players)
+
     for player in players:
         sense.set_pixel(
             player["position"]["x"], player["position"]["y"], player["color"]

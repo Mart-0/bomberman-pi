@@ -1,3 +1,3 @@
-let config = {
-    "host": "ws://:8765",
+export default {
+    host: "ws://:8765",
 }

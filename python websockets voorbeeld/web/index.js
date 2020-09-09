@@ -1,7 +1,10 @@
+import config from './config.js';
+
 const minus = document.querySelector(".minus");
 const plus = document.querySelector(".plus");
 const value = document.querySelector(".value");
 const users = document.querySelector(".users");
+
 const websocket = new WebSocket(config.host);
 
 websocket.onmessage = ({ data }) => {
