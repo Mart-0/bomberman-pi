@@ -27,8 +27,8 @@ function displayPlayers(data) {
 
 function pageInfo() {
   // testing
-  var node = document.createElement("LI");
-  var textnode = document.createTextNode("Water");
+  let node = document.createElement("LI");
+  let textnode = document.createTextNode("Water");
   node.appendChild(textnode);
   document.getElementById("myList").appendChild(node);
 }

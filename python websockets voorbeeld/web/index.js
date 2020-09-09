@@ -2,7 +2,7 @@ const minus = document.querySelector(".minus");
 const plus = document.querySelector(".plus");
 const value = document.querySelector(".value");
 const users = document.querySelector(".users");
-const websocket = new WebSocket("ws://145.44.96.127:8766/");
+const websocket = new WebSocket(config.host);
 
 websocket.onmessage = ({ data }) => {
   data = JSON.parse(data);
