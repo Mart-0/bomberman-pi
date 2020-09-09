@@ -69,6 +69,14 @@ async def update_player():
     logging.info("%s", "player send")
 
 
+async def place_bomb():
+    global server, bombs, player
+
+    json_bomb = json.dumps({"action": "place_bomb", "data": {"position": player["position"]}})
+    await server.send(json_bomb)
+    logging.info("%s", "bomb send")
+
+
 class WebsocketThread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
@@ -141,7 +149,7 @@ def move_player(dir, r):
     if s == 0 or s == 1:
         player["position"] = new_position
         asyncio.new_event_loop().run_until_complete(update_player())
-
+        
 
 def check_position(x, y):
     global chunks
@@ -222,7 +230,7 @@ sense.stick.direction_up = move_up
 sense.stick.direction_down = move_down
 sense.stick.direction_left = move_left
 sense.stick.direction_right = move_right
-sense.stick.direction_middle = stop
+sense.stick.direction_middle = place_bomb
 
 
 def show_bombs():
