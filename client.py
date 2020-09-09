@@ -138,6 +138,14 @@ def start_move(dir):
     anti_spam = 1
 
 
+def move_screen(dir, axis, pos):
+    global playerKeys, anti_spam
+    playerKeys[dir] = 1
+    set_interval()
+    anti_spam = 1
+    player["position"][axis] = pos
+
+
 def move_player(dir, r):
     global player
 
@@ -199,7 +207,7 @@ def move_up(event):
         start_move("u")
     elif event.action == "pressed" and player["position"]["y"] <= 0:
         player["position"]["Y"] -= 1
-        player["position"]["y"] = 7
+        move_player("u", "y", 7)
     elif event.action == "released":
         playerKeys["u"] = 0
 
@@ -210,7 +218,7 @@ def move_down(event):
         start_move("d")
     elif event.action == "pressed" and player["position"]["y"] >= 7:
         player["position"]["Y"] += 1
-        player["position"]["y"] = 0
+        move_player("d", "y", 0)
     elif event.action == "released":
         playerKeys["d"] = 0
 
@@ -221,7 +229,7 @@ def move_left(event):
         start_move("l")
     elif event.action == "pressed" and player["position"]["x"] <= 0:
         player["position"]["X"] -= 1
-        player["position"]["x"] = 7
+        move_player("l", "x", 7)
     elif event.action == "released":
         playerKeys["l"] = 0
 
@@ -232,7 +240,7 @@ def move_right(event):
         start_move("r")
     elif event.action == "pressed" and player["position"]["x"] >= 7:
         player["position"]["X"] += 1
-        player["position"]["x"] = 0
+        move_player("r", "x", 0)
     elif event.action == "released":
         playerKeys["r"] = 0
 
