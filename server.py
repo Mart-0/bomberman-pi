@@ -24,10 +24,8 @@ class Chunk:
 
 players = data_config.players.copy()
 users = set()
-bombs = [
-    {"position": {"X": 1, "Y": 1, "x": 2, "y": 2}},
-    {"position": {"X": 1, "Y": 1, "x": 2, "y": 4}},
-]
+web_users = set()
+bombs = []
 chunks = data_config.chunks.copy()
 
 id = 1
@@ -108,12 +106,37 @@ async def notify_players():
         await asyncio.wait([user.send(message) for user in users])
 
 
+async def web_notify_users():
+    if users:
+        message = users_event()
+        await asyncio.wait([user.send(message) for user in web_users])
+
+
+async def web_notify_bombs():
+    if bombs:
+        message = bombs_event()
+        await asyncio.wait([user.send(message) for user in web_users])
+
+
+async def web_notify_chunks():
+    if chunks:
+        message = chunks_event()
+        await asyncio.wait([user.send(message) for user in web_users])
+
+
+async def web_notify_players():
+    if players:
+        message = players_event()
+        await asyncio.wait([user.send(message) for user in web_users])
+
+
+
 async def register(websocket):
     users.add(websocket)
     logging.info("players connected: %s", len(users))
     await notify_users()
     await notify_chunks()
-    # await notify_bombs()
+    await notify_bombs()
     await notify_players()
 
 
@@ -121,6 +144,20 @@ async def unregister(websocket):
     users.remove(websocket)
     logging.info("players connected: %s", len(users))
     await notify_users()
+
+
+async def register_dashboard(websocket):
+    web_users.add(websocket)
+    logging.info("web users connected: %s", len(web_users))
+    await web_notify_users()
+    await web_notify_chunks()
+    await web_notify_players()
+
+
+async def unregister_dashboard(websocket):
+    web_users.remove(websocket)
+    logging.info("web users connected: %s", len(web_users))
+
 
 
 def update_player(data):
@@ -136,8 +173,13 @@ def update_player(data):
     players[i]["position"] = data["data"]["position"]
 
 
-def place_bomb(data):
-    print('bomb placed!')
+async def place_bomb(data):
+    time = 2000
+    bomb = {"position": data['data']["position"], "time": time}
+    bombs.append(bomb)
+    await notify_bombs()
+
+
 
 async def incoming_socket(websocket, path):
     # register(websocket) sends user_event() to websocket
@@ -152,9 +194,8 @@ async def incoming_socket(websocket, path):
                 update_player(data)
                 await notify_players()
             elif data["action"] == "place_bomb":
-                # logging.info("%s", data)
-                place_bomb(data)
-                await notify_players()
+                logging.info("%s", data)
+                await place_bomb(data)
             else:
                 logging.error("unsupported event: %s", data)
     except Exception as e:
@@ -162,16 +203,38 @@ async def incoming_socket(websocket, path):
         logging.error("conection closed!")
         await unregister(websocket)
 
+
+    
+async def website_socket(websocket, path):
+    await register_dashboard(websocket)
+    try:
+        await websocket.send(chunks_event())
+
+        async for message in websocket:
+            data = json.loads(message)
+            print(data)
+    except Exception as e:
+        logging.error("error: %s", e)
+        logging.error("conection closed!")
+        await unregister_dashboard(websocket)
+
 # 145.44.96.127
 # 192.168.2.10
 start_server = websockets.serve(incoming_socket, "145.44.96.127", 8765)
+start_web_server = websockets.serve(website_socket, "145.44.96.127", 8766)
+
+
+
 
 
 try:
     asyncio.get_event_loop().run_until_complete(start_server)
+    asyncio.get_event_loop().run_until_complete(start_web_server)
+
     logging.info("server running!")
     asyncio.get_event_loop().run_forever()
 except Exception as e:
     logging.error("error: %s", e)
     logging.error("server can't start!")
     sys.exit()
+
