@@ -1,0 +1,8 @@
+#!/usr/bin/env python3
+
+server = {
+    "host": "ws://192.168.2.10:8765",
+}
+# server = {
+#     "host": "ws://145.44.96.127:8765",
+# }
