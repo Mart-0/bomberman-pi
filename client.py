@@ -11,8 +11,6 @@ import threading
 import sys
 
 sense = SenseHat()
-sense.low_light = True
-
 
 logging.basicConfig(
     level=logging.INFO,
@@ -141,10 +139,12 @@ def start_move(dir):
 
 
 def move_screen(dir, axis, pos):
-    global player
+    global playerKeys, anti_spam, player
+    playerKeys[dir] = 1
+    set_interval()
+    anti_spam = 1
     player["position"][axis] = pos
-    startmove(dir)
-    
+
 
 def move_player(dir, r):
     global player
@@ -157,24 +157,23 @@ def move_player(dir, r):
     else:
         if player["position"][dir] > 0:
             new_position[dir] -= 1
-    s = check_position(new_position)
+    s = check_position(new_position["x"], new_position["y"])
 
     if s == 0 or s == 1:
         player["position"] = new_position
         asyncio.new_event_loop().run_until_complete(update_player())
 
 
-def check_position(position):
+def check_position(x, y):
     global chunks
 
-    index = ((position["y"]) * 8) + position["x"]
+    index = ((y) * 8) + x
 
+    i = 0
     for chunk in chunks:
-        if (
-            chunk["position"]["x"] == position["X"]
-            and chunk["position"]["y"] == position["Y"]
-        ):
+        if i == 0:
             grid = chunk["grid"]
+        i += 1
 
     return grid[index]
 
@@ -265,15 +264,6 @@ def show_bombs():
 
 
 def show_players():
-    # global player
-    # enemy_players = set()
-    # for enemy_player in players:
-    #     if (
-    #         enemy_player["position"]["X"] == player["position"]["X"]
-    #         and enemy_player["position"]["Y"] == player["position"]["Y"]
-    #     ):
-    #         enemy_players.add(enemy_player)
-
     for player in players:
         sense.set_pixel(
             player["position"]["x"], player["position"]["y"], player["color"]
@@ -298,7 +288,7 @@ def build_world():
 
     if grid:
         O = (0, 0, 0)
-        PW = (192, 192, 192)
+        PW = (140, 140, 200)
         TW = (100, 48, 48)
 
         dic = {0: O, 1: O, 2: TW, 3: PW}
