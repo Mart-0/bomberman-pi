@@ -138,6 +138,14 @@ def start_move(dir):
     anti_spam = 1
 
 
+def move_screen(dir, axis, pos):
+    global playerKeys, anti_spam
+    playerKeys[dir] = 1
+    set_interval()
+    anti_spam = 1
+    player["position"][axis] = pos
+
+
 def move_player(dir, r):
     global player
 
@@ -149,23 +157,24 @@ def move_player(dir, r):
     else:
         if player["position"][dir] > 0:
             new_position[dir] -= 1
-    s = check_position(new_position["x"], new_position["y"])
+    s = check_position(new_position)
 
     if s == 0 or s == 1:
         player["position"] = new_position
         asyncio.new_event_loop().run_until_complete(update_player())
 
 
-def check_position(x, y):
+def check_position(position):
     global chunks
 
-    index = ((y) * 8) + x
+    index = ((position["y"]) * 8) + position["x"]
 
-    i = 0
     for chunk in chunks:
-        if i == 0:
+        if (
+            chunk["position"]["x"] == position["X"]
+            and chunk["position"]["y"] == position["Y"]
+        ):
             grid = chunk["grid"]
-        i += 1
 
     return grid[index]
 
@@ -199,7 +208,7 @@ def move_up(event):
         start_move("u")
     elif event.action == "pressed" and player["position"]["y"] <= 0:
         player["position"]["Y"] -= 1
-        player["position"]["y"] = 7
+        move_screen("u", "y", 7)
     elif event.action == "released":
         playerKeys["u"] = 0
 
@@ -210,7 +219,7 @@ def move_down(event):
         start_move("d")
     elif event.action == "pressed" and player["position"]["y"] >= 7:
         player["position"]["Y"] += 1
-        player["position"]["y"] = 0
+        move_screen("d", "y", 0)
     elif event.action == "released":
         playerKeys["d"] = 0
 
@@ -221,7 +230,7 @@ def move_left(event):
         start_move("l")
     elif event.action == "pressed" and player["position"]["x"] <= 0:
         player["position"]["X"] -= 1
-        player["position"]["x"] = 7
+        move_screen("l", "x", 7)
     elif event.action == "released":
         playerKeys["l"] = 0
 
@@ -232,7 +241,7 @@ def move_right(event):
         start_move("r")
     elif event.action == "pressed" and player["position"]["x"] >= 7:
         player["position"]["X"] += 1
-        player["position"]["x"] = 0
+        move_screen("r", "x", 0)
     elif event.action == "released":
         playerKeys["r"] = 0
 
@@ -256,6 +265,15 @@ def show_bombs():
 
 
 def show_players():
+    # global player
+    # enemy_players = set()
+    # for enemy_player in players:
+    #     if (
+    #         enemy_player["position"]["X"] == player["position"]["X"]
+    #         and enemy_player["position"]["Y"] == player["position"]["Y"]
+    #     ):
+    #         enemy_players.add(enemy_player)
+
     for player in players:
         sense.set_pixel(
             player["position"]["x"], player["position"]["y"], player["color"]
