@@ -11,6 +11,7 @@ import threading
 import sys
 
 sense = SenseHat()
+sense.low_light = True
 
 logging.basicConfig(
     level=logging.INFO,
@@ -29,7 +30,7 @@ players = set()
 StartTime = time.time()
 
 inter = ""
-playerSpeed = 0.35
+playerSpeed = 0.3
 playerKeys = {"u": 0, "d": 0, "l": 0, "r": 0}
 anti_spam = 0
 running = 1
@@ -82,48 +83,6 @@ async def send_bomb():
     logging.info("%s", "bomb send")
 
 
-class WebsocketThread(threading.Thread):
-    def __init__(self):
-        threading.Thread.__init__(self)
-
-    def run(self):
-        try:
-            asyncio.new_event_loop().run_until_complete(incoming_socket())
-        except Exception as e:
-            logging.error("error: %s", e)
-            logging.error("%s", "The server is closed or not connected!")
-            stop()
-
-
-async def incoming_socket():
-    global chunks, bombs, player, players, running, server
-    uri = config.server["host"]
-    async with websockets.connect(uri) as websocket:
-        logging.info("%s", "The server is conneced!")
-
-        server = websocket
-        while True:
-            message = await websocket.recv()
-            data = json.loads(message)
-
-            if data["type"] == "users":
-                if player == 0:
-                    player = data["data"]
-                    logging.info("id: %s", data["data"]["id"])
-                logging.info("players connected: %s", data["count"])
-            elif data["type"] == "bombs":
-                bombs = data["data"]
-                logging.info("%s", "bombs loaded")
-            elif data["type"] == "players":
-                players = data["data"]
-                logging.info("%s", "players loaded")
-            elif data["type"] == "chunks":
-                chunks = data["data"]
-                logging.info("%s", "chunks loaded")
-            else:
-                logging.error("unsupported event: %s", data)
-
-
 def draw_player():
     if player:
         sense.set_pixel(
@@ -131,19 +90,18 @@ def draw_player():
         )
 
 
-def start_move(dir):
-    global playerKeys, anti_spam
-    playerKeys[dir] = 1
-    set_interval()
-    anti_spam = 1
 
 
-def move_screen(dir, axis, pos):
-    global playerKeys, anti_spam, player
-    playerKeys[dir] = 1
-    set_interval()
-    anti_spam = 1
-    player["position"][axis] = pos
+def move_screen(dir, r):
+    global player
+
+    if  r == 0:
+        player["position"][dir.upper()] -= 1
+        player["position"][dir] = 7
+    else:
+        player["position"][dir.upper()] += 1
+        player["position"][dir] = 0
+
 
 
 def move_player(dir, r):
@@ -154,9 +112,15 @@ def move_player(dir, r):
     if r == 1:
         if player["position"][dir] < 7:
             new_position[dir] += 1
+        elif player["position"][dir] >= 7:
+            return move_screen(dir, r)
     else:
         if player["position"][dir] > 0:
             new_position[dir] -= 1
+        elif player["position"][dir] <= 0:
+            return move_screen(dir, r)
+
+
     s = check_position(new_position)
 
     if s == 0 or s == 1:
@@ -201,47 +165,43 @@ def set_interval():
     if anti_spam == 0:
         inter = setInterval(playerSpeed, check_keys)
 
+def start_move(dir):
+    global playerKeys, anti_spam
+    playerKeys[dir] = 1
+    set_interval()
+    anti_spam = 1
+
+
+
 
 def move_up(event):
     global player, anti_spam, playerKeys
-    if event.action == "pressed" and player["position"]["y"] > 0:
+    if event.action == "pressed" and player["position"]["y"] >= 0:
         start_move("u")
-    elif event.action == "pressed" and player["position"]["y"] <= 0:
-        player["position"]["Y"] -= 1
-        move_screen("u", "y", 7)
     elif event.action == "released":
         playerKeys["u"] = 0
 
 
 def move_down(event):
     global player, anti_spam, playerKeys
-    if event.action == "pressed" and player["position"]["y"] < 7:
+    if event.action == "pressed" and player["position"]["y"] <= 7:
         start_move("d")
-    elif event.action == "pressed" and player["position"]["y"] >= 7:
-        player["position"]["Y"] += 1
-        move_screen("d", "y", 0)
     elif event.action == "released":
         playerKeys["d"] = 0
 
 
 def move_left(event):
     global player, anti_spam, playerKeys
-    if event.action == "pressed" and player["position"]["x"] > 0:
+    if event.action == "pressed" and player["position"]["x"] >= 0:
         start_move("l")
-    elif event.action == "pressed" and player["position"]["x"] <= 0:
-        player["position"]["X"] -= 1
-        move_screen("l", "x", 7)
     elif event.action == "released":
         playerKeys["l"] = 0
 
 
 def move_right(event):
     global player, anti_spam, playerKeys
-    if event.action == "pressed" and player["position"]["x"] < 7:
+    if event.action == "pressed" and player["position"]["x"] <= 7:
         start_move("r")
-    elif event.action == "pressed" and player["position"]["x"] >= 7:
-        player["position"]["X"] += 1
-        move_screen("r", "x", 0)
     elif event.action == "released":
         playerKeys["r"] = 0
 
@@ -314,6 +274,50 @@ def build_world():
         sense.set_pixels(pixels)
 
 
+
+class WebsocketThread(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+
+    def run(self):
+        try:
+            asyncio.new_event_loop().run_until_complete(incoming_socket())
+        except Exception as e:
+            logging.error("error: %s", e)
+            logging.error("%s", "The server is closed or not connected!")
+            stop()
+
+
+async def incoming_socket():
+    global chunks, bombs, player, players, running, server
+    uri = config.server["host"]
+    async with websockets.connect(uri) as websocket:
+        logging.info("%s", "The server is conneced!")
+
+        server = websocket
+        while True:
+            message = await websocket.recv()
+            data = json.loads(message)
+
+            if data["type"] == "users":
+                if player == 0:
+                    player = data["data"]
+                    logging.info("id: %s", data["data"]["id"])
+                logging.info("players connected: %s", data["count"])
+            elif data["type"] == "bombs":
+                bombs = data["data"]
+                logging.info("%s", "bombs loaded")
+            elif data["type"] == "players":
+                players = data["data"]
+                logging.info("%s", "players loaded")
+            elif data["type"] == "chunks":
+                chunks = data["data"]
+                logging.info("%s", "chunks loaded")
+            else:
+                logging.error("unsupported event: %s", data)
+
+
+
 server = WebsocketThread()
 server.start()
 
@@ -324,7 +328,7 @@ def game_loop():
         show_bombs()
         show_players()
         draw_player()
-        time.sleep(0.1)
+        time.sleep(0.05)
         sense.clear(0, 0, 0)
 
 
