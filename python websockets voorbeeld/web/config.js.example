@@ -1,0 +1,3 @@
+let config = {
+    "host": "ws://:8765",
+}
