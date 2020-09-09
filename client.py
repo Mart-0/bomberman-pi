@@ -264,6 +264,17 @@ def show_bombs():
 
 
 def show_players():
+    # global player
+    # enemy_players = set()
+    # for enemy_player in players:
+    #     if (
+    #         enemy_player["position"]["X"] == player["position"]["X"]
+    #         and enemy_player["position"]["Y"] == player["position"]["Y"]
+    #     ):
+    #         enemy_players.add(enemy_player)
+
+    # print(players)
+
     for player in players:
         sense.set_pixel(
             player["position"]["x"], player["position"]["y"], player["color"]
