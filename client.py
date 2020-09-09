@@ -29,7 +29,7 @@ players = set()
 StartTime = time.time()
 
 inter = ""
-playerSpeed = 0.4
+playerSpeed = 0.35
 playerKeys = {"u": 0, "d": 0, "l": 0, "r": 0}
 anti_spam = 0
 running = 1
@@ -260,36 +260,42 @@ sense.stick.direction_middle = place_bomb
 
 
 def show_bombs():
-    for bomb in bombs:
-        sense.set_pixel(bomb["position"]["x"], bomb["position"]["y"], R)
+    global player
+
+    if player and bombs:
+        bombs_in_screen = []
+        for bomb in bombs:
+            if (
+                bomb["position"]["X"] == player["position"]["X"]
+                and bomb["position"]["Y"] == player["position"]["Y"]
+            ):
+                bombs_in_screen.append(bomb)
+
+        for bomb in bombs_in_screen:
+            sense.set_pixel(bomb["position"]["x"], bomb["position"]["y"], R)
 
 
 def show_players():
-    # global player
-    # enemy_players = set()
-    # for enemy_player in players:
-    #     if (
-    #         enemy_player["position"]["X"] == player["position"]["X"]
-    #         and enemy_player["position"]["Y"] == player["position"]["Y"]
-    #     ):
-    #         enemy_players.add(enemy_player)
+    global player
 
-    # print(players)
+    if player and players:
+        enemy_players = []
+        for enemy_player in players:
+            if (
+                enemy_player["position"]["X"] == player["position"]["X"]
+                and enemy_player["position"]["Y"] == player["position"]["Y"]
+            ):
+                enemy_players.append(enemy_player)
 
-    for player in players:
-        sense.set_pixel(
-            player["position"]["x"], player["position"]["y"], player["color"]
-        )
+        for player in enemy_players:
+            sense.set_pixel(
+                player["position"]["x"], player["position"]["y"], player["color"]
+            )
 
 
 def build_world():
     global chunks
     grid = 0
-    i = 0
-    # for chunk in chunks:
-    #     if i == 0:
-    #         grid = chunk["grid"]
-    #     i += 1
 
     for chunk in chunks:
         if (
@@ -300,7 +306,7 @@ def build_world():
 
     if grid:
         O = (0, 0, 0)
-        PW = (140, 140, 200)
+        PW = (200, 200, 255)
         TW = (100, 48, 48)
 
         dic = {0: O, 1: O, 2: TW, 3: PW}

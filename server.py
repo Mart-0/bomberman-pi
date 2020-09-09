@@ -41,11 +41,11 @@ for chunk in chunks:
         for item in sublist:
             flat_chunk_data.append(item)
 
-    # a = 0
-    # for x in flat_chunk_data:
-    #     if x == 1:
-    #         flat_chunk_data[a] = random.randint(1, 2)
-    #     a += 1
+    a = 0
+    for x in flat_chunk_data:
+        if x == 1:
+            flat_chunk_data[a] = random.randint(1, 2)
+        a += 1
 
     chunks[i]["grid"] = flat_chunk_data
     i += 1
