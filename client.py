@@ -69,12 +69,18 @@ async def update_player():
     logging.info("%s", "player send")
 
 
-async def place_bomb():
+def place_bomb():
+    asyncio.new_event_loop().run_until_complete(send_bomb())
+
+
+async def send_bomb():
     global server, bombs, player
 
     json_bomb = json.dumps({"action": "place_bomb", "data": {"position": player["position"]}})
     await server.send(json_bomb)
     logging.info("%s", "bomb send")
+
+
 
 
 class WebsocketThread(threading.Thread):

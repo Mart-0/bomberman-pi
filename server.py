@@ -39,11 +39,11 @@ for chunk in chunks:
         for item in sublist:
             flat_chunk_data.append(item)
 
-    a = 0
-    for x in flat_chunk_data:
-        if x == 1:
-            flat_chunk_data[a] = random.randint(1, 2)
-        a += 1
+    # a = 0
+    # for x in flat_chunk_data:
+    #     if x == 1:
+    #         flat_chunk_data[a] = random.randint(1, 2)
+    #     a += 1
 
     chunks[i]["grid"] = flat_chunk_data
     i += 1
@@ -103,7 +103,7 @@ async def notify_chunks():
 
 
 async def notify_players():
-    if chunks:
+    if players:
         message = players_event()
         await asyncio.wait([user.send(message) for user in users])
 
@@ -136,6 +136,9 @@ def update_player(data):
     players[i]["position"] = data["data"]["position"]
 
 
+def place_bomb(data):
+    print('bomb placed!')
+
 async def incoming_socket(websocket, path):
     # register(websocket) sends user_event() to websocket
 
@@ -148,6 +151,10 @@ async def incoming_socket(websocket, path):
                 logging.info("%s", data)
                 update_player(data)
                 await notify_players()
+            elif data["action"] == "place_bomb":
+                # logging.info("%s", data)
+                place_bomb(data)
+                await notify_players()
             else:
                 logging.error("unsupported event: %s", data)
     except Exception as e:
@@ -155,8 +162,9 @@ async def incoming_socket(websocket, path):
         logging.error("conection closed!")
         await unregister(websocket)
 
-
-start_server = websockets.serve(incoming_socket, "192.168.2.10", 8765)
+# 145.44.96.127
+# 192.168.2.10
+start_server = websockets.serve(incoming_socket, "145.44.96.127", 8765)
 
 
 try:
