@@ -157,23 +157,24 @@ def move_player(dir, r):
     else:
         if player["position"][dir] > 0:
             new_position[dir] -= 1
-    s = check_position(new_position["x"], new_position["y"])
+    s = check_position(new_position)
 
     if s == 0 or s == 1:
         player["position"] = new_position
         asyncio.new_event_loop().run_until_complete(update_player())
 
 
-def check_position(x, y):
+def check_position(position):
     global chunks
 
-    index = ((y) * 8) + x
+    index = ((position["y"]) * 8) + position["x"]
 
-    i = 0
     for chunk in chunks:
-        if i == 0:
+        if (
+            chunk["position"]["x"] == position["X"]
+            and chunk["position"]["y"] == position["Y"]
+        ):
             grid = chunk["grid"]
-        i += 1
 
     return grid[index]
 
