@@ -8,6 +8,7 @@ import numpy
 import random
 import data_config
 import sys
+import datetime
 
 logging.basicConfig(
     level=logging.INFO,
@@ -130,7 +131,6 @@ async def web_notify_players():
         await asyncio.wait([user.send(message) for user in web_users])
 
 
-
 async def register(websocket):
     users.add(websocket)
     logging.info("players connected: %s", len(users))
@@ -159,7 +159,6 @@ async def unregister_dashboard(websocket):
     logging.info("web users connected: %s", len(web_users))
 
 
-
 def update_player(data):
     global players
     i = 0
@@ -174,11 +173,9 @@ def update_player(data):
 
 
 async def place_bomb(data):
-    time = 2000
-    bomb = {"position": data['data']["position"], "time": time}
+    bomb = {"position": data["data"]["position"], "time": 2000}
     bombs.append(bomb)
     await notify_bombs()
-
 
 
 async def incoming_socket(websocket, path):
@@ -204,7 +201,6 @@ async def incoming_socket(websocket, path):
         await unregister(websocket)
 
 
-    
 async def website_socket(websocket, path):
     await register_dashboard(websocket)
     try:
@@ -218,13 +214,11 @@ async def website_socket(websocket, path):
         logging.error("conection closed!")
         await unregister_dashboard(websocket)
 
+
 # 145.44.96.127
 # 192.168.2.10
-start_server = websockets.serve(incoming_socket, "145.44.96.127", 8765)
-start_web_server = websockets.serve(website_socket, "145.44.96.127", 8766)
-
-
-
+start_server = websockets.serve(incoming_socket, "192.168.2.10", 8765)
+start_web_server = websockets.serve(website_socket, "192.168.2.10", 8766)
 
 
 try:
@@ -237,4 +231,3 @@ except Exception as e:
     logging.error("error: %s", e)
     logging.error("server can't start!")
     sys.exit()
-

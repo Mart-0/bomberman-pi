@@ -76,11 +76,11 @@ def place_bomb():
 async def send_bomb():
     global server, bombs, player
 
-    json_bomb = json.dumps({"action": "place_bomb", "data": {"position": player["position"]}})
+    json_bomb = json.dumps(
+        {"action": "place_bomb", "data": {"position": player["position"]}}
+    )
     await server.send(json_bomb)
     logging.info("%s", "bomb send")
-
-
 
 
 class WebsocketThread(threading.Thread):
@@ -155,7 +155,7 @@ def move_player(dir, r):
     if s == 0 or s == 1:
         player["position"] = new_position
         asyncio.new_event_loop().run_until_complete(update_player())
-        
+
 
 def check_position(x, y):
     global chunks
@@ -277,8 +277,8 @@ server.start()
 def game_loop():
     while running:
         build_world()
-        show_players()
         show_bombs()
+        show_players()
         draw_player()
         time.sleep(0.1)
         sense.clear(0, 0, 0)
