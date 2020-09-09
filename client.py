@@ -207,7 +207,7 @@ def move_up(event):
         start_move("u")
     elif event.action == "pressed" and player["position"]["y"] <= 0:
         player["position"]["Y"] -= 1
-        move_player("u", "y", 7)
+        move_screen("u", "y", 7)
     elif event.action == "released":
         playerKeys["u"] = 0
 
@@ -218,7 +218,7 @@ def move_down(event):
         start_move("d")
     elif event.action == "pressed" and player["position"]["y"] >= 7:
         player["position"]["Y"] += 1
-        move_player("d", "y", 0)
+        move_screen("d", "y", 0)
     elif event.action == "released":
         playerKeys["d"] = 0
 
@@ -229,7 +229,7 @@ def move_left(event):
         start_move("l")
     elif event.action == "pressed" and player["position"]["x"] <= 0:
         player["position"]["X"] -= 1
-        move_player("l", "x", 7)
+        move_screen("l", "x", 7)
     elif event.action == "released":
         playerKeys["l"] = 0
 
@@ -240,7 +240,7 @@ def move_right(event):
         start_move("r")
     elif event.action == "pressed" and player["position"]["x"] >= 7:
         player["position"]["X"] += 1
-        move_player("r", "x", 0)
+        move_screen("r", "x", 0)
     elif event.action == "released":
         playerKeys["r"] = 0
 
