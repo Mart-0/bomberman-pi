@@ -2,14 +2,11 @@ const minus = document.querySelector(".minus");
 const plus = document.querySelector(".plus");
 const value = document.querySelector(".value");
 const users = document.querySelector(".users");
-const websocket = new WebSocket("ws://192.168.2.20:8765/");
-
-minus.onclick = () => websocket.send(JSON.stringify({ action: "minus" }));
-plus.onclick = () => websocket.send(JSON.stringify({ action: "plus" }));
+const websocket = new WebSocket("ws://145.44.96.127:8766/");
 
 websocket.onmessage = ({ data }) => {
   data = JSON.parse(data);
-
+  console.log(data)
   const types = {
     state: () => (value.textContent = data.value),
     users: () => {
