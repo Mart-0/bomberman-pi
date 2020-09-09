@@ -197,6 +197,9 @@ def move_up(event):
     global player, anti_spam, playerKeys
     if event.action == "pressed" and player["position"]["y"] > 0:
         start_move("u")
+    elif event.action == "pressed" and player["position"]["y"] <= 0:
+        player["position"]["Y"] -= 1
+        player["position"]["Y"] = 7
     elif event.action == "released":
         playerKeys["u"] = 0
 
@@ -205,6 +208,9 @@ def move_down(event):
     global player, anti_spam, playerKeys
     if event.action == "pressed" and player["position"]["y"] < 7:
         start_move("d")
+    elif event.action == "pressed" and player["position"]["y"] >= 7:
+        player["position"]["Y"] += 1
+        player["position"]["Y"] = 0
     elif event.action == "released":
         playerKeys["d"] = 0
 
@@ -213,6 +219,9 @@ def move_left(event):
     global player, anti_spam, playerKeys
     if event.action == "pressed" and player["position"]["x"] > 0:
         start_move("l")
+    elif event.action == "pressed" and player["position"]["x"] <= 0:
+        player["position"]["X"] -= 1
+        player["position"]["x"] = 7
     elif event.action == "released":
         playerKeys["l"] = 0
 
@@ -221,6 +230,9 @@ def move_right(event):
     global player, anti_spam, playerKeys
     if event.action == "pressed" and player["position"]["x"] < 7:
         start_move("r")
+    elif event.action == "pressed" and player["position"]["x"] >= 7:
+        player["position"]["X"] += 1
+        player["position"]["x"] = 0
     elif event.action == "released":
         playerKeys["r"] = 0
 
