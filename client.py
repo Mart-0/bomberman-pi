@@ -272,7 +272,10 @@ def build_world():
 
 
 def explode_bom(data):
+    global player
     print(data["position"])
+    if player["position"]["X"] == data["position"]["X"] and player["position"]["Y"] == data["position"]["Y"]:
+        sense.set_pixel(data["position"]["x"], data["position"]["y"], (255, 255, 255))
 
 
 class WebsocketThread(threading.Thread):
