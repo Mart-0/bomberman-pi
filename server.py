@@ -43,7 +43,7 @@ for chunk in chunks:
     a = 0
     for x in flat_chunk_data:
         if x == 1:
-            random_int = random.randint(1, 100)
+            random_int = random.randint(1, 60)
             if random_int > 2:
                 flat_chunk_data[a] = 2
         a += 1
