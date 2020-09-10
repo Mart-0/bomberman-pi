@@ -124,7 +124,7 @@ players = [
     {
         "id": 1,
         "alive": 1,
-        "position": {"X": 0, "Y": 0, "x": 2, "y": 2},
+        "position": {"X": 0, "Y": 0, "x": 1, "y": 1},
         "color": (255, 255, 0),
     },
     {
@@ -136,13 +136,13 @@ players = [
     {
         "id": 3,
         "alive": 1,
-        "position": {"X": 0, "Y": 2, "x": 2, "y": 5},
+        "position": {"X": 0, "Y": 2, "x": 1, "y": 6},
         "color": (255, 165, 0),
     },
     {
         "id": 4,
         "alive": 1,
-        "position": {"X": 2, "Y": 0, "x": 5, "y": 2},
+        "position": {"X": 2, "Y": 0, "x": 6, "y": 1},
         "color": (0, 0, 255),
     },
     {
@@ -154,7 +154,7 @@ players = [
     {
         "id": 6,
         "alive": 1,
-        "position": {"X": 2, "Y": 2, "x": 5, "y": 5},
+        "position": {"X": 2, "Y": 2, "x": 6, "y": 6},
         "color": (255, 0, 255),
     },
 ]
