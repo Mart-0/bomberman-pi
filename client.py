@@ -242,9 +242,11 @@ def show_players():
             ):
                 enemy_players.append(enemy_player)
 
-        for player in enemy_players:
+        for enemy_player_2 in enemy_players:
             sense.set_pixel(
-                player["position"]["x"], player["position"]["y"], player["color"]
+                enemy_player_2["position"]["x"],
+                enemy_player_2["position"]["y"],
+                enemy_player_2["color"],
             )
 
 
@@ -300,6 +302,7 @@ async def incoming_socket():
                     logging.info("id: %s", data["data"]["id"])
                 logging.info("players connected: %s", data["count"])
             elif data["type"] == "bombs":
+                logging.info("%s", bombs)
                 bombs = data["data"]
                 logging.info("%s", "bombs loaded")
             elif data["type"] == "players":

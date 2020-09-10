@@ -29,6 +29,7 @@ users = set()
 web_users = set()
 bombs = []
 chunks = data_config.chunks.copy()
+bomb_id = 0
 
 id = 1
 
@@ -61,15 +62,15 @@ def users_event():
 
 def get_user(id):
     global players
-    i = 0
-    for player in players:
-        if player["id"]:
-            if player["id"] == id:
-                break
-            else:
-                i += 1
+    # i = 0
+    # for player in players:
+    #     if player["id"]:
+    #         if player["id"] == id:
+    #             break
+    #         else:
+    #             i += 1
 
-    return players[i]
+    return players[id]
 
 
 def bombs_event():
@@ -174,8 +175,10 @@ def update_player(data):
 
 
 async def place_bomb(data):
+    global bomb_id
     time = 2000
-    bomb = {"position": data["data"]["position"], "time": time}
+    bomb = {"id": bomb_id, "position": data["data"]["position"], "time": time}
+    bomb_id += 1
     bombs.append(bomb)
     await notify_bombs()
 
@@ -270,8 +273,21 @@ class BombsTimer(threading.Thread):
                 if bomb["time"] > 0:
                     bomb["time"] -= 100
                 else:
-                    await notify_bombs()
+                    
+                    # i = 0
+                    # for bomb in bombs:
+                    #     running = 1
+                    #     while running:
+                    #         if bomb["id"] == i:
+                    #             running = 0
+                    #             break
+                    #         else:
+                    #             i += 1
+                    # print(i)
+
+
                     bombs.remove(bomb)
+                    await notify_bombs()
 
 
 bombs_timer = BombsTimer()
