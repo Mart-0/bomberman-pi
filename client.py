@@ -301,6 +301,14 @@ def show_explosion():
     #         explosions.remove(explosion)
 
 
+def check_dead():
+    for active_player in players:
+        print(active_player["alive"])
+
+        if active_player["alive"] == 0 and active_player["id"] == player["id"]:
+            stop()
+
+
 class WebsocketThread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
@@ -328,7 +336,6 @@ async def incoming_socket():
             if data["type"] == "users":
                 if player == 0:
                     player = data["data"]
-                    print(player)
                     logging.info("id: %s", data["data"]["id"])
                 logging.info("players connected: %s", data["count"])
             elif data["type"] == "bombs":
@@ -337,6 +344,7 @@ async def incoming_socket():
                 logging.info("%s", "bombs loaded")
             elif data["type"] == "players":
                 players = data["data"]
+                check_dead()
                 logging.info("%s", "players loaded")
             elif data["type"] == "chunks":
                 chunks = data["data"]
