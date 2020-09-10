@@ -217,7 +217,7 @@ sense.stick.direction_middle = place_bomb
 def show_bombs():
     global player
 
-    if player and bombs:
+    if player:
         bombs_in_screen = []
         for bomb in bombs:
             if (

@@ -273,20 +273,19 @@ class BombsTimer(threading.Thread):
                 if bomb["time"] > 0:
                     bomb["time"] -= 100
                 else:
-                    
-                    # i = 0
-                    # for bomb in bombs:
-                    #     running = 1
-                    #     while running:
-                    #         if bomb["id"] == i:
-                    #             running = 0
-                    #             break
-                    #         else:
-                    #             i += 1
-                    # print(i)
 
-
-                    bombs.remove(bomb)
+                    i = 0
+                    for bomb in bombs:
+                        running = 1
+                        while running:
+                            if bomb["id"] == i:
+                                running = 0
+                                break
+                            else:
+                                i += 1
+                    print(i)
+                    del bombs[i]
+                    print(bombs)
                     await notify_bombs()
 
 
