@@ -30,8 +30,8 @@ web_users = set()
 bombs = []
 chunks = data_config.chunks.copy()
 bomb_id = 0
-
-id = 1
+bomb = 0
+id = 0
 
 i = 0
 for chunk in chunks:
@@ -73,6 +73,10 @@ def get_user(id):
     return players[id]
 
 
+def bombs_explosion_event():
+    return json.dumps({"type": "bombs_explosion", "data": bomb})
+
+
 def bombs_event():
     return json.dumps({"type": "bombs", "data": bombs})
 
@@ -91,8 +95,15 @@ async def notify_users():
         await asyncio.wait([user.send(message) for user in users])
 
 
+async def notify_bombs_explosion():
+    if bomb:
+        print(bomb)
+        message = bombs_explosion_event()
+        await asyncio.wait([user.send(message) for user in users])
+
+
 async def notify_bombs():
-    if bombs:
+    if bombs or bombs == []:
         message = bombs_event()
         await asyncio.wait([user.send(message) for user in users])
 
@@ -266,26 +277,16 @@ class BombsTimer(threading.Thread):
         loop.run_forever()
 
     async def timer(self):
-        global bombs
+        global bombs, bomb
         while True:
             time.sleep(0.1)
-            for bomb in bombs:
-                if bomb["time"] > 0:
-                    bomb["time"] -= 100
+            for c_bomb in bombs:
+                if c_bomb["time"] > 0:
+                    c_bomb["time"] -= 100
                 else:
-
-                    i = 0
-                    for bomb in bombs:
-                        running = 1
-                        while running:
-                            if bomb["id"] == i:
-                                running = 0
-                                break
-                            else:
-                                i += 1
-                    print(i)
-                    del bombs[i]
-                    print(bombs)
+                    bombs.remove(c_bomb)
+                    bomb = c_bomb
+                    await notify_bombs_explosion()
                     await notify_bombs()
 
 
