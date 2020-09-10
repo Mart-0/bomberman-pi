@@ -43,7 +43,9 @@ for chunk in chunks:
     a = 0
     for x in flat_chunk_data:
         if x == 1:
-            flat_chunk_data[a] = random.randint(1, 2)
+            random_int = random.randint(1, 100)
+            if random_int > 2:
+                flat_chunk_data[a] = 2
         a += 1
 
     chunks[i]["grid"] = flat_chunk_data

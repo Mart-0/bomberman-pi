@@ -267,7 +267,7 @@ def build_world():
     if grid:
         O = (0, 0, 0)
         PW = (200, 200, 255)
-        TW = (100, 48, 48)
+        TW = (150, 48, 48)
 
         dic = {0: O, 1: O, 2: TW, 3: PW}
         pixels = [dic.get(n, n) for n in grid]
