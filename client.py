@@ -38,7 +38,7 @@ running = 1
 users = set()
 bombs = set()
 chunks = []
-
+explosions = []
 server = set()
 
 
@@ -272,17 +272,29 @@ def build_world():
 
 
 def explode_bom(data):
-    global player
-    #explosion
-    radius = 2
-    print(data["position"])
-    if player["position"]["X"] == data["position"]["X"] and player["position"]["Y"] == data["position"]["Y"]:
-        sense.set_pixel(data["position"]["x"], data["position"]["y"], (255, 255, 255))
-        #explosion["position"]["x"] = data["position"]["x"]
-        #explosion["position"]["y"] = data["position"]["y"]
-        #while radius > 0:
-            #sense.set_pixel(data["position"]["x"] - 1, data["position"]["y"], (255, 255, 255))
+    global explosions
+    data['time'] = 500
+    explosions.append(data)   
 
+
+def show_explosion():
+    print('show_explosion')
+    # for explosion in explosions
+    #     if explosion['time'] > 0:
+
+    #     # laten zien
+    #     # radius = 2
+    #     # print(data["position"])
+    #     # if player["position"]["X"] == data["position"]["X"] and player["position"]["Y"] == data["position"]["Y"]:
+    #     #     sense.set_pixel(data["position"]["x"], data["position"]["y"], (255, 255, 255))
+    #     #     #explosion["position"]["x"] = data["position"]["x"]
+    #         #explosion["position"]["y"] = data["position"]["y"]
+    #         #while radius > 0:
+    #             #sense.set_pixel(data["position"]["x"] - 1, data["position"]["y"], (255, 255, 255))
+
+    #             # tijd verminddern
+    #     else:
+    #         explosions.remove(explosion)
 
 class WebsocketThread(threading.Thread):
     def __init__(self):
@@ -339,6 +351,7 @@ def game_loop():
     while running:
         build_world()
         show_bombs()
+        show_explosion()
         show_players()
         draw_player()
         time.sleep(0.05)
