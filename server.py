@@ -97,7 +97,6 @@ async def notify_users():
 
 async def notify_bombs_explosion():
     if bomb:
-        print(bomb)
         message = bombs_explosion_event()
         await asyncio.wait([user.send(message) for user in users])
 
