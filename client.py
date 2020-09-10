@@ -291,7 +291,7 @@ def show_explosion():
                 while x < 6:
                     pos = explosion["position"].copy()
                     pos["x"] = pos["x"] + x - 3
-                    if pos["x"] > 0 and pos["x"] < 7:
+                    if pos["x"] >= 0 and pos["x"] < 8:
                         sense.set_pixel(pos["x"], pos["y"], [255, 100, 0])
                     x += 1
 
@@ -299,7 +299,7 @@ def show_explosion():
                 while y < 6:
                     pos = explosion["position"].copy()
                     pos["y"] = pos["y"] + y - 3
-                    if pos["y"] > 0 and pos["y"] < 7:
+                    if pos["y"] >= 0 and pos["y"] < 8:
                         sense.set_pixel(pos["x"], pos["y"], [255, 100, 0])
                     y += 1
 

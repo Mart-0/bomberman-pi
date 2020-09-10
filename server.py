@@ -299,7 +299,7 @@ async def explode_bom(data):
         while x < 6:
             pos = data["position"].copy()
             pos["x"] = pos["x"] + x - 3
-            if pos["x"] > 0 and pos["x"] < 7:
+            if pos["x"] >= 0 and pos["x"] < 8:
                 kill_player(pos)
                 grid = remove_wall(grid, pos)
             x += 1
@@ -308,7 +308,7 @@ async def explode_bom(data):
         while y < 6:
             pos = data["position"].copy()
             pos["y"] = pos["y"] + y - 3
-            if pos["y"] > 0 and pos["y"] < 7:
+            if pos["y"] >= 0 and pos["y"] < 8:
                 kill_player(pos)
                 grid = remove_wall(grid, pos)
             y += 1
