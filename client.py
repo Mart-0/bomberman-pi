@@ -303,8 +303,7 @@ def show_explosion():
                         sense.set_pixel(pos["x"], pos["y"], [255, 100, 0])
                     y += 1
 
-            explosion["time"] -= 100
-            time.sleep(0.1)
+            explosion["time"] -= 50
         else:
             explosions.remove(explosion)
 
