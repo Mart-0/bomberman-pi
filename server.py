@@ -40,11 +40,11 @@ for chunk in chunks:
         for item in sublist:
             flat_chunk_data.append(item)
 
-    # a = 0
-    # for x in flat_chunk_data:
-    #     if x == 1:
-    #         flat_chunk_data[a] = random.randint(1, 2)
-    #     a += 1
+    a = 0
+    for x in flat_chunk_data:
+        if x == 1:
+            flat_chunk_data[a] = random.randint(1, 2)
+        a += 1
 
     chunks[i]["grid"] = flat_chunk_data
     i += 1
@@ -230,6 +230,67 @@ async def website_socket(websocket, path):
         await unregister_dashboard(websocket)
 
 
+def check_position(position):
+    global chunks
+
+    index = ((position["y"]) * 8) + position["x"]
+
+    for chunk in chunks:
+        if (
+            chunk["position"]["x"] == position["X"]
+            and chunk["position"]["y"] == position["Y"]
+        ):
+            grid = chunk["grid"]
+
+    return grid[index]
+
+
+def remove_wall(grid, position):
+    wall = check_position(position)
+    if wall == 2:
+        index = ((position["y"]) * 8) + position["x"]
+        del grid[index]
+        grid.insert(index, 0)
+    return grid
+
+
+async def explode_bom(data):
+    global chunks
+
+    for chunk in chunks:
+        if (
+            chunk["position"]["x"] == data["position"]["X"]
+            and chunk["position"]["y"] == data["position"]["Y"]
+        ):
+            grid = chunk["grid"]
+
+    if grid:
+        x = 1
+        while x < 5:
+            pos = data["position"].copy()
+            pos["x"] = pos["x"] + x - 2
+            if pos["x"] > 0 and pos["x"] < 7:
+                grid = remove_wall(grid, pos)
+            x += 1
+
+        y = 1
+        while y < 5:
+            pos = data["position"].copy()
+            pos["y"] = pos["y"] + y - 2
+            if pos["y"] > 0 and pos["y"] < 7:
+                grid = remove_wall(grid, pos)
+            y += 1
+
+    for chunk in chunks:
+        if (
+            chunk["position"]["x"] == data["position"]["X"]
+            and chunk["position"]["y"] == data["position"]["Y"]
+        ):
+            chunk["grid"] = grid
+
+    await notify_chunks()
+
+
 # 145.44.96.127
 # 192.168.2.10
 
@@ -285,6 +346,7 @@ class BombsTimer(threading.Thread):
                 else:
                     bombs.remove(c_bomb)
                     bomb = c_bomb
+                    await explode_bom(bomb)
                     await notify_bombs_explosion()
                     await notify_bombs()
 
