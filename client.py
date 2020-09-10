@@ -324,7 +324,10 @@ class WebsocketThread(threading.Thread):
             asyncio.new_event_loop().run_until_complete(incoming_socket())
         except Exception as e:
             logging.error("error: %s", e)
-            logging.error("%s", "The server is closed or not connected!")
+            logging.error(
+                "%s",
+                "The server is closed or not connected or there are no more players!",
+            )
             stop()
 
 
