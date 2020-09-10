@@ -11,7 +11,7 @@ import threading
 import sys
 
 sense = SenseHat()
-sense.low_light = True
+sense.low_light = False
 
 logging.basicConfig(
     level=logging.INFO,
