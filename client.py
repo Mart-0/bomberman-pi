@@ -273,19 +273,18 @@ def build_world():
 
 def explode_bom(data):
     global explosions
-    data['time'] = 500
-    explosions.append(data)   
+    data["time"] = 500
+    explosions.append(data)
 
 
 def show_explosion():
-    print('show_explosion')
-    for explosion in explosions
-        if explosion['time'] > 0:
+    for explosion in explosions:
+        if explosion["time"] > 0:
             xyz = 1
-     #       explosion['time'] - 1
-      #      radius = 2
-       #     if player["position"]["X"] == data["position"]["X"] and player["position"]["Y"] == data["position"]["Y"]:
-        #        sense.set_pixel(explosion["position"]["x"], data["position"]["y"], (255, 255, 255))
+    #       explosion['time'] - 1
+    #      radius = 2
+    #     if player["position"]["X"] == data["position"]["X"] and player["position"]["Y"] == data["position"]["Y"]:
+    #        sense.set_pixel(explosion["position"]["x"], data["position"]["y"], (255, 255, 255))
 
     #     # laten zien
     #     # radius = 2
@@ -300,6 +299,7 @@ def show_explosion():
     #             # tijd verminddern
     #     else:
     #         explosions.remove(explosion)
+
 
 class WebsocketThread(threading.Thread):
     def __init__(self):
