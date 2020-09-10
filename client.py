@@ -276,7 +276,7 @@ def build_world():
 
 def explode_bom(data):
     global explosions
-    data["time"] = 500
+    data["time"] = 300
     explosions.append(data)
 
 

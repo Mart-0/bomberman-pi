@@ -40,13 +40,13 @@ for chunk in chunks:
         for item in sublist:
             flat_chunk_data.append(item)
 
-    a = 0
-    for x in flat_chunk_data:
-        if x == 1:
-            random_int = random.randint(1, 60)
-            if random_int > 2:
-                flat_chunk_data[a] = 2
-        a += 1
+    # a = 0
+    # for x in flat_chunk_data:
+    #     if x == 1:
+    #         random_int = random.randint(1, 60)
+    #         if random_int > 2:
+    #             flat_chunk_data[a] = 2
+    #     a += 1
 
     chunks[i]["grid"] = flat_chunk_data
     i += 1
@@ -98,8 +98,11 @@ def players_event():
 
 async def notify_users():
     if users:
-        message = users_event()
-        await asyncio.wait([user.send(message) for user in users])
+        try:
+            message = users_event()
+            await asyncio.wait([user.send(message) for user in users])
+        except Exception as e:
+            logging.error("error: %s", e)
 
 
 async def notify_bombs_explosion():
