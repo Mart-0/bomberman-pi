@@ -100,6 +100,8 @@ def move_screen(dir, r):
         player["position"][dir.upper()] += 1
         player["position"][dir] = 0
 
+    asyncio.new_event_loop().run_until_complete(update_player())
+
 
 def move_player(dir, r):
     global player
