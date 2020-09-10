@@ -271,6 +271,10 @@ def build_world():
         sense.set_pixels(pixels)
 
 
+def explode_bom(data):
+    print(data["position"])
+
+
 class WebsocketThread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
@@ -311,6 +315,9 @@ async def incoming_socket():
             elif data["type"] == "chunks":
                 chunks = data["data"]
                 logging.info("%s", "chunks loaded")
+            elif data["type"] == "bombs_explosion":
+                explode_bom(data["data"])
+                logging.info("%s", "bomb exploded")
             else:
                 logging.error("unsupported event: %s", data)
 
