@@ -239,6 +239,7 @@ def show_players():
             if (
                 enemy_player["position"]["X"] == player["position"]["X"]
                 and enemy_player["position"]["Y"] == player["position"]["Y"]
+                and enemy_player["alive"] == 1
             ):
                 enemy_players.append(enemy_player)
 
@@ -310,8 +311,6 @@ def show_explosion():
 
 def check_dead():
     for active_player in players:
-        print(active_player)
-
         if active_player["alive"] == 0 and active_player["id"] == player["id"]:
             stop()
 
