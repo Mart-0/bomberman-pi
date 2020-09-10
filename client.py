@@ -281,10 +281,11 @@ def show_explosion():
     print('show_explosion')
     for explosion in explosions
         if explosion['time'] > 0:
-            explosion['time'] - 1
-            radius = 2
-            if player["position"]["X"] == data["position"]["X"] and player["position"]["Y"] == data["position"]["Y"]:
-                sense.set_pixel(explosion["position"]["x"], data["position"]["y"], (255, 255, 255))
+            xyz = 1
+     #       explosion['time'] - 1
+      #      radius = 2
+       #     if player["position"]["X"] == data["position"]["X"] and player["position"]["Y"] == data["position"]["Y"]:
+        #        sense.set_pixel(explosion["position"]["x"], data["position"]["y"], (255, 255, 255))
 
     #     # laten zien
     #     # radius = 2
