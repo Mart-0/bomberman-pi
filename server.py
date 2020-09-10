@@ -86,7 +86,12 @@ def chunks_event():
 
 
 def players_event():
-    return json.dumps({"type": "players", "data": players})
+    alive_players = []
+    for player in players:
+        if player["alive"] == 1:
+            alive_players.append(player)
+
+    return json.dumps({"type": "players", "data": alive_players})
 
 
 async def notify_users():
@@ -223,7 +228,6 @@ async def website_socket(websocket, path):
 
         async for message in websocket:
             data = json.loads(message)
-            print(data)
     except Exception as e:
         logging.error("error: %s", e)
         logging.error("conection closed!")
@@ -254,6 +258,32 @@ def remove_wall(grid, position):
     return grid
 
 
+def kill_player(pos):
+    global players, player
+    players_in_chunk = []
+
+    if players:
+        for player in players:
+
+            if (
+                player["position"]["X"] == pos["X"]
+                and player["position"]["Y"] == pos["Y"]
+            ):
+                players_in_chunk.append(player)
+
+        for player in players_in_chunk:
+            id = 0
+            if (
+                player["position"]["x"] == pos["x"]
+                and player["position"]["y"] == pos["y"]
+            ):
+                id = player["id"]
+
+            for player in players:
+                if player["id"] == id:
+                    player["alive"] = 0
+
+
 async def explode_bom(data):
     global chunks
 
@@ -270,6 +300,7 @@ async def explode_bom(data):
             pos = data["position"].copy()
             pos["x"] = pos["x"] + x - 2
             if pos["x"] > 0 and pos["x"] < 7:
+                kill_player(pos)
                 grid = remove_wall(grid, pos)
             x += 1
 
@@ -278,6 +309,7 @@ async def explode_bom(data):
             pos = data["position"].copy()
             pos["y"] = pos["y"] + y - 2
             if pos["y"] > 0 and pos["y"] < 7:
+                kill_player(pos)
                 grid = remove_wall(grid, pos)
             y += 1
 

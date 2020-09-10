@@ -121,10 +121,10 @@ chunks = [
 ]
 
 players = [
-    {"id": 1, "position": {"X": 0, "Y": 0, "x": 2, "y": 2}, "color": (255, 255, 0)},
-    {"id": 2, "position": {"X": 0, "Y": 1, "x": 2, "y": 2}, "color": (0, 255, 0)},
-    {"id": 3, "position": {"X": 0, "Y": 2, "x": 2, "y": 5}, "color": (255, 165, 0)},
-    {"id": 4, "position": {"X": 2, "Y": 0, "x": 5, "y": 2}, "color": (0, 0, 255)},
-    {"id": 5, "position": {"X": 2, "Y": 1, "x": 5, "y": 5}, "color": (0, 191, 255)},
-    {"id": 6, "position": {"X": 2, "Y": 2, "x": 5, "y": 5}, "color": (255, 0, 255)},
+    {"id": 1, "alive": 1, "position": {"X": 0, "Y": 0, "x": 2, "y": 2}, "color": (255, 255, 0)},
+    {"id": 2, "alive": 1, "position": {"X": 0, "Y": 1, "x": 2, "y": 2}, "color": (0, 255, 0)},
+    {"id": 3, "alive": 1, "position": {"X": 0, "Y": 2, "x": 2, "y": 5}, "color": (255, 165, 0)},
+    {"id": 4, "alive": 1, "position": {"X": 2, "Y": 0, "x": 5, "y": 2}, "color": (0, 0, 255)},
+    {"id": 5, "alive": 1, "position": {"X": 2, "Y": 1, "x": 5, "y": 5}, "color": (0, 191, 255)},
+    {"id": 6, "alive": 1, "position": {"X": 2, "Y": 2, "x": 5, "y": 5}, "color": (255, 0, 255)},
 ]
