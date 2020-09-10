@@ -8,6 +8,8 @@ import numpy
 import random
 import data_config
 import sys
+import threading
+import time
 
 logging.basicConfig(
     level=logging.INFO,
@@ -217,17 +219,60 @@ async def website_socket(websocket, path):
 
 # 145.44.96.127
 # 192.168.2.10
-start_server = websockets.serve(incoming_socket, "192.168.2.10", 8765)
-start_web_server = websockets.serve(website_socket, "192.168.2.10", 8766)
 
 
-try:
-    asyncio.get_event_loop().run_until_complete(start_server)
-    asyncio.get_event_loop().run_until_complete(start_web_server)
+class WebsocketThread(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
 
-    logging.info("server running!")
-    asyncio.get_event_loop().run_forever()
-except Exception as e:
-    logging.error("error: %s", e)
-    logging.error("server can't start!")
-    sys.exit()
+    def run(self):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            start_server = websockets.serve(incoming_socket, "192.168.2.10", 8765)
+            start_web_server = websockets.serve(website_socket, "192.168.2.10", 8766)
+        except Exception as e:
+            logging.error("error: %s", e)
+            logging.error("server can't start!")
+            sys.exit()
+
+        try:
+            loop.run_until_complete(start_server)
+            loop.run_until_complete(start_web_server)
+
+            logging.info("server running!")
+            loop.run_forever()
+        except Exception as e:
+            logging.error("error: %s", e)
+            logging.error("server can't start!")
+            sys.exit()
+
+
+websocket_thread = WebsocketThread()
+websocket_thread.start()
+
+
+class BombsTimer(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+
+    def run(self):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(self.timer())
+        loop.run_forever()
+
+    async def timer(self):
+        global bombs
+        while True:
+            time.sleep(0.1)
+            for bomb in bombs:
+                if bomb["time"] > 0:
+                    bomb["time"] -= 100
+                else:
+                    await notify_bombs()
+                    bombs.remove(bomb)
+
+
+bombs_timer = BombsTimer()
+bombs_timer.start()

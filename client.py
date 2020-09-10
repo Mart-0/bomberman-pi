@@ -296,6 +296,7 @@ async def incoming_socket():
             if data["type"] == "users":
                 if player == 0:
                     player = data["data"]
+                    print(player)
                     logging.info("id: %s", data["data"]["id"])
                 logging.info("players connected: %s", data["count"])
             elif data["type"] == "bombs":
