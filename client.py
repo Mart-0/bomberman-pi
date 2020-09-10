@@ -310,7 +310,7 @@ def show_explosion():
 
 def check_dead():
     for active_player in players:
-        print(active_player["alive"])
+        print(active_player)
 
         if active_player["alive"] == 0 and active_player["id"] == player["id"]:
             stop()
@@ -373,7 +373,7 @@ def game_loop():
         show_bombs()
         show_explosion()
         show_players()
-        draw_player()
+        # draw_player()
         time.sleep(0.05)
         sense.clear(0, 0, 0)
 

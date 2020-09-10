@@ -86,12 +86,12 @@ def chunks_event():
 
 
 def players_event():
-    alive_players = []
-    for player in players:
-        if player["alive"] == 1:
-            alive_players.append(player)
+    # alive_players = []
+    # for player in players:
+    #     if player["alive"] == 1:
+    #         alive_players.append(player)
 
-    return json.dumps({"type": "players", "data": alive_players})
+    return json.dumps({"type": "players", "data": players})
 
 
 async def notify_users():
@@ -321,6 +321,7 @@ async def explode_bom(data):
             chunk["grid"] = grid
 
     await notify_chunks()
+    await notify_players()
 
 
 # 145.44.96.127
