@@ -130,7 +130,7 @@ players = [
     {
         "id": 2,
         "alive": 1,
-        "position": {"X": 0, "Y": 1, "x": 2, "y": 2},
+        "position": {"X": 0, "Y": 1, "x": 1, "y": 2},
         "color": (0, 255, 0),
     },
     {
@@ -148,7 +148,7 @@ players = [
     {
         "id": 5,
         "alive": 1,
-        "position": {"X": 2, "Y": 1, "x": 5, "y": 5},
+        "position": {"X": 2, "Y": 1, "x": 6, "y": 5},
         "color": (0, 191, 255),
     },
     {
