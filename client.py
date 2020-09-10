@@ -281,38 +281,26 @@ def show_explosion():
     for explosion in explosions:
         if explosion["time"] > 0:
 
-            #       explosion['time'] - 1
-            #      radius = 2
-            #     if player["position"]["X"] == data["position"]["X"] and player["position"]["Y"] == data["position"]["Y"]:
-            #        sense.set_pixel(explosion["position"]["x"], data["position"]["y"], (255, 255, 255))
+            if (
+                player["position"]["X"] == explosion["position"]["X"]
+                and player["position"]["Y"] == explosion["position"]["Y"]
+            ):
 
-            #     # laten zien
-            #     # radius = 2
-            #     # print(data["position"])
-            #     # if player["position"]["X"] == data["position"]["X"] and player["position"]["Y"] == data["position"]["Y"]:
-            #     #     sense.set_pixel(data["position"]["x"], data["position"]["y"], (255, 255, 255))
-            #     #     #explosion["position"]["x"] = data["position"]["x"]
-            #         #explosion["position"]["y"] = data["position"]["y"]
-            #         #while radius > 0:
-            #             #sense.set_pixel(data["position"]["x"] - 1, data["position"]["y"], (255, 255, 255))
+                x = 1
+                while x < 6:
+                    pos = explosion["position"].copy()
+                    pos["x"] = pos["x"] + x - 3
+                    if pos["x"] > 0 and pos["x"] < 7:
+                        sense.set_pixel(pos["x"], pos["y"], [255, 100, 0])
+                    x += 1
 
-            #             # tijd verminddern
-
-            x = 1
-            while x < 6:
-                pos = explosion["position"].copy()
-                pos["x"] = pos["x"] + x - 3
-                if pos["x"] > 0 and pos["x"] < 7:
-                    sense.set_pixel(pos["x"], pos["y"], [255, 100, 0])
-                x += 1
-
-            y = 1
-            while y < 6:
-                pos = explosion["position"].copy()
-                pos["y"] = pos["y"] + y - 3
-                if pos["y"] > 0 and pos["y"] < 7:
-                    sense.set_pixel(pos["x"], pos["y"], [255, 100, 0])
-                y += 1
+                y = 1
+                while y < 6:
+                    pos = explosion["position"].copy()
+                    pos["y"] = pos["y"] + y - 3
+                    if pos["y"] > 0 and pos["y"] < 7:
+                        sense.set_pixel(pos["x"], pos["y"], [255, 100, 0])
+                    y += 1
 
             explosion["time"] -= 100
             time.sleep(0.1)
