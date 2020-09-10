@@ -273,9 +273,14 @@ def build_world():
 
 def explode_bom(data):
     global player
+    radius = 2
     print(data["position"])
     if player["position"]["X"] == data["position"]["X"] and player["position"]["Y"] == data["position"]["Y"]:
         sense.set_pixel(data["position"]["x"], data["position"]["y"], (255, 255, 255))
+        explosion["position"]["x"] = data["position"]["x"]
+        explosion["position"]["y"] = data["position"]["y"]
+        while radius > 0:
+            sense.set_pixel(data["position"]["x"] - 1, data["position"]["y"], (255, 255, 255))
 
 
 class WebsocketThread(threading.Thread):
